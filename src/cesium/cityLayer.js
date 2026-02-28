@@ -1,4 +1,5 @@
 import * as Cesium from "cesium";
+import { safeFetch } from "../utils/fetchUtils.js";
 
 function minPopulationForCameraHeight(height) {
   if (height > 18000000) return 5000000;
@@ -8,9 +9,7 @@ function minPopulationForCameraHeight(height) {
 
 async function createCityLayer(viewer, options) {
   var fetchFn = (options && options.fetchFn) || fetch;
-  var response = await fetchFn("/data/cities.geojson");
-  if (!response.ok) throw new Error("Failed to load cities: HTTP " + response.status);
-  var geo = await response.json();
+  var geo = await safeFetch("/data/cities.geojson", fetchFn);
   if (!geo || !geo.features) throw new Error("Invalid cities GeoJSON: missing features array");
 
   var dataSource = new Cesium.CustomDataSource("cities");

@@ -1,7 +1,7 @@
 import { MP } from "../data/index.js";
 
 function pClr(pop) {
-  var t = Math.pow(pop / MP, 0.3);
+  var t = 0.15 + Math.pow(pop / MP, 0.3) * 0.85;
   var s = [
     [25, 60, 110],
     [18, 125, 125],

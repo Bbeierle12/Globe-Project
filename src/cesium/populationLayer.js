@@ -1,6 +1,7 @@
 import * as Cesium from "cesium";
 import { ID_MAP, ISO_MAP, SUB_CONFIGS, findCountry } from "../data/index.js";
 import { decodeTopo, pClr } from "./topoUtils.js";
+import { safeFetch } from "../utils/fetchUtils.js";
 
 var EARTH_TOPO_URL = "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json";
 
@@ -43,7 +44,7 @@ function colorFromPopulation(pop, alpha) {
 
 function stylePopulationEntity(entity, pop) {
   if (!entity.polygon) return;
-  var fill = colorFromPopulation(pop, 145);
+  var fill = colorFromPopulation(pop, 170);
   entity.__baseFill = fill;
   entity.polygon.material = fill;
   entity.polygon.outline = false;
@@ -75,16 +76,9 @@ async function createPopulationLayer(viewer, options) {
     indexEntity(entity, entry);
   }
 
-  function safeFetch(url) {
-    return fetchFn(url).then(function(r) {
-      if (!r.ok) throw new Error("HTTP " + r.status + " for " + url);
-      return r.json();
-    });
-  }
-
-  var fetches = [safeFetch(EARTH_TOPO_URL)];
+  var fetches = [safeFetch(EARTH_TOPO_URL, fetchFn)];
   SUB_CONFIGS.forEach(function(cfg) {
-    fetches.push(safeFetch(cfg.url));
+    fetches.push(safeFetch(cfg.url, fetchFn));
   });
   var settled = await Promise.allSettled(fetches);
 
