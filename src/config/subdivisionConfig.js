@@ -81,7 +81,24 @@ var SUB_CONFIGS = [
   { iso: "PAK", url: "/topo/pk-provinces.json", objectName: "ne_10m_admin_1_states_provinces", codeField: "sc", extractCode: extractIso3166_2Suffix, skipName: "Pakistan" },
   { iso: "NGA", url: "/topo/ng-states.json", objectName: "ne_10m_admin_1_states_provinces", codeField: "sc", extractCode: extractIso3166_2Suffix, skipName: "Nigeria" },
   { iso: "BGD", url: "/topo/bd-divisions.json", objectName: "bd_divisions", codeField: "sc", extractCode: extractIso3166_2Suffix, skipName: "Bangladesh" },
-  { iso: "RUS", url: "/topo/ru-regions.json", objectName: "ne_10m_admin_1_states_provinces", codeField: "sc", extractCode: extractIso3166_2Suffix, skipName: "Russia" }
+  { iso: "RUS", url: "/topo/ru-regions.json", objectName: "ne_10m_admin_1_states_provinces", codeField: "sc", extractCode: extractIso3166_2Suffix, skipName: "Russia" },
+  { iso: "DEU", url: "/topo/de-states.json", objectName: "ne_10m_admin_1_states_provinces", codeField: "sc", extractCode: extractIso3166_2Suffix, skipName: "Germany" },
+  { iso: "FRA", url: "/topo/fr-regions.json", objectName: "ne_10m_admin_1_states_provinces", codeField: "sc", extractCode: extractIso3166_2Suffix, skipName: "France" },
+  { iso: "AUS", url: "/topo/au-states.json", objectName: "ne_10m_admin_1_states_provinces", codeField: "sc", extractCode: extractIso3166_2Suffix, skipName: "Australia" },
+  { iso: "JPN", url: "/topo/jp-prefectures.json", objectName: "ne_10m_admin_1_states_provinces", codeField: "sc", extractCode: extractIso3166_2Suffix, skipName: "Japan" },
+  {
+    iso: "GBR",
+    url: "/topo/gb-countries.json",
+    objectName: "ne_10m_admin_0_map_subunits",
+    codeField: "sc",
+    extractCode: function(f) {
+      var nameMap = { "England": "ENG", "Scotland": "SCT", "Wales": "WLS", "N. Ireland": "NIR" };
+      var name = f.properties && f.properties.NAME;
+      return nameMap[name] || null;
+    },
+    skipName: "United Kingdom"
+  },
+  { iso: "KOR", url: "/topo/kr-provinces.json", objectName: "ne_10m_admin_1_states_provinces", codeField: "sc", extractCode: extractIso3166_2Suffix, skipName: "South Korea" }
 ];
 
 var COUNTY_CONFIG = {
