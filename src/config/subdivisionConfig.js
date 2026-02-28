@@ -98,7 +98,22 @@ var SUB_CONFIGS = [
     },
     skipName: "United Kingdom"
   },
-  { iso: "KOR", url: "/topo/kr-provinces.json", objectName: "ne_10m_admin_1_states_provinces", codeField: "sc", extractCode: extractIso3166_2Suffix, skipName: "South Korea" }
+  { iso: "KOR", url: "/topo/kr-provinces.json", objectName: "ne_10m_admin_1_states_provinces", codeField: "sc", extractCode: extractIso3166_2Suffix, skipName: "South Korea" },
+  { iso: "ETH", url: "/topo/et-regions.json", objectName: "ne_10m_admin_1_states_provinces", codeField: "sc", extractCode: extractIso3166_2Suffix, skipName: "Ethiopia" },
+  { iso: "EGY", url: "/topo/eg-governorates.json", objectName: "ne_10m_admin_1_states_provinces", codeField: "sc", extractCode: extractIso3166_2Suffix, skipName: "Egypt" },
+  { iso: "PHL", url: "/topo/ph-regions.json", objectName: "ne_10m_admin_1_states_provinces", codeField: "sc", extractCode: extractIso3166_2Suffix, skipName: "Philippines" },
+  { iso: "COD", url: "/topo/cd-provinces.json", objectName: "ne_10m_admin_1_states_provinces", codeField: "sc", extractCode: extractIso3166_2Suffix, skipName: "DR Congo" },
+  { iso: "VNM", url: "/topo/vn-provinces.json", objectName: "ne_10m_admin_1_states_provinces", codeField: "sc", extractCode: extractIso3166_2Suffix, skipName: "Vietnam" },
+  { iso: "IRN", url: "/topo/ir-provinces.json", objectName: "ne_10m_admin_1_states_provinces", codeField: "sc", extractCode: extractIso3166_2Suffix, skipName: "Iran" },
+  { iso: "TUR", url: "/topo/tr-provinces.json", objectName: "ne_10m_admin_1_states_provinces", codeField: "sc", extractCode: extractIso3166_2Suffix, skipName: "Turkey" },
+  { iso: "TZA", url: "/topo/tz-regions.json", objectName: "ne_10m_admin_1_states_provinces", codeField: "sc", extractCode: extractIso3166_2Suffix, skipName: "Tanzania" },
+  { iso: "THA", url: "/topo/th-provinces.json", objectName: "ne_10m_admin_1_states_provinces", codeField: "sc", extractCode: extractIso3166_2Suffix, skipName: "Thailand" },
+  { iso: "ZAF", url: "/topo/za-provinces.json", objectName: "ne_10m_admin_1_states_provinces", codeField: "sc", extractCode: extractIso3166_2Suffix, skipName: "South Africa" },
+  { iso: "ITA", url: "/topo/it-regions.json", objectName: "ne_10m_admin_1_states_provinces", codeField: "sc", extractCode: extractIso3166_2Suffix, skipName: "Italy" },
+  { iso: "KEN", url: "/topo/ke-counties.json", objectName: "ne_10m_admin_1_states_provinces", codeField: "sc", extractCode: extractIso3166_2Suffix, skipName: "Kenya" },
+  { iso: "MMR", url: "/topo/mm-states.json", objectName: "ne_10m_admin_1_states_provinces", codeField: "sc", extractCode: extractIso3166_2Suffix, skipName: "Myanmar" },
+  { iso: "ESP", url: "/topo/es-communities.json", objectName: "ne_10m_admin_1_states_provinces", codeField: "sc", extractCode: extractIso3166_2Suffix, skipName: "Spain" },
+  { iso: "POL", url: "/topo/pl-voivodeships.json", objectName: "ne_10m_admin_1_states_provinces", codeField: "sc", extractCode: extractIso3166_2Suffix, skipName: "Poland" }
 ];
 
 var COUNTY_CONFIG = {

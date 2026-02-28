@@ -52,6 +52,39 @@ var FRA_REGION_CODES = {
   "Provence-Alpes-C\u00f4te-d'Azur": "PAC"
 };
 
+// Italian region names to ISO 3166-2:IT codes
+var ITA_REGION_CODES = {
+  "Piemonte": "21", "Valle d'Aosta": "23", "Lombardia": "25", "Trentino-Alto Adige": "32",
+  "Veneto": "34", "Friuli-Venezia Giulia": "36", "Liguria": "42", "Emilia-Romagna": "45",
+  "Toscana": "52", "Umbria": "55", "Marche": "57", "Lazio": "62",
+  "Abruzzo": "65", "Molise": "67", "Campania": "72", "Apulia": "75",
+  "Basilicata": "77", "Calabria": "78", "Sicily": "82", "Sardegna": "88"
+};
+
+// Spanish autonomous community names to ISO 3166-2:ES codes
+var ESP_REGION_CODES = {
+  "Andalucía": "AN", "Aragón": "AR", "Asturias": "AS", "Islas Baleares": "IB",
+  "Canary Is.": "CN", "Cantabria": "CB", "Castilla y León": "CL",
+  "Castilla-La Mancha": "CM", "Cataluña": "CT", "Valenciana": "VC",
+  "Extremadura": "EX", "Galicia": "GA", "Madrid": "MD", "Murcia": "MC",
+  "Foral de Navarra": "NC", "País Vasco": "PV", "La Rioja": "RI",
+  "Ceuta": "CE", "Melilla": "ML"
+};
+
+// Philippine region names to short codes
+var PHL_REGION_CODES = {
+  "National Capital Region": "NCR",
+  "Cordillera Administrative Region (CAR)": "CAR",
+  "Ilocos (Region I)": "01", "Cagayan Valley (Region II)": "02",
+  "Central Luzon (Region III)": "03", "CALABARZON (Region IV-A)": "4A",
+  "MIMAROPA (Region IV-B)": "4B", "Bicol (Region V)": "05",
+  "Western Visayas (Region VI)": "06", "Central Visayas (Region VII)": "07",
+  "Eastern Visayas (Region VIII)": "08", "Zamboanga Peninsula (Region IX)": "09",
+  "Northern Mindanao (Region X)": "10", "Davao (Region XI)": "11",
+  "SOCCSKSARGEN (Region XII)": "12", "Dinagat Islands (Region XIII)": "13",
+  "Autonomous Region in Muslim Mindanao (ARMM)": "ARMM"
+};
+
 var CONFIGS = [
   {
     code: "DEU",
@@ -65,11 +98,11 @@ var CONFIGS = [
     file: "fr-regions.json",
     objectName: "ne_10m_admin_1_states_provinces",
     source: "admin1",
-    // This uses custom post-processing to merge departments into regions
     filter: function (f) {
       return f.properties.adm0_a3 === "FRA" && f.properties.type_en === "Metropolitan department";
     },
     postProcess: "mergeByRegion",
+    regionCodeMap: FRA_REGION_CODES,
   },
   {
     code: "AUS",
@@ -103,6 +136,117 @@ var CONFIGS = [
     source: "admin1",
     filter: function (f) { return f.properties.adm0_a3 === "KOR"; },
   },
+  {
+    code: "ETH",
+    file: "et-regions.json",
+    objectName: "ne_10m_admin_1_states_provinces",
+    source: "admin1",
+    filter: function (f) { return f.properties.adm0_a3 === "ETH"; },
+  },
+  {
+    code: "EGY",
+    file: "eg-governorates.json",
+    objectName: "ne_10m_admin_1_states_provinces",
+    source: "admin1",
+    filter: function (f) { return f.properties.adm0_a3 === "EGY"; },
+  },
+  {
+    code: "PHL",
+    file: "ph-regions.json",
+    objectName: "ne_10m_admin_1_states_provinces",
+    source: "admin1",
+    filter: function (f) { return f.properties.adm0_a3 === "PHL"; },
+    postProcess: "mergeByRegion",
+    regionCodeMap: PHL_REGION_CODES,
+  },
+  {
+    code: "COD",
+    file: "cd-provinces.json",
+    objectName: "ne_10m_admin_1_states_provinces",
+    source: "admin1",
+    filter: function (f) { return f.properties.adm0_a3 === "COD"; },
+  },
+  {
+    code: "VNM",
+    file: "vn-provinces.json",
+    objectName: "ne_10m_admin_1_states_provinces",
+    source: "admin1",
+    filter: function (f) { return f.properties.adm0_a3 === "VNM"; },
+  },
+  {
+    code: "IRN",
+    file: "ir-provinces.json",
+    objectName: "ne_10m_admin_1_states_provinces",
+    source: "admin1",
+    filter: function (f) { return f.properties.adm0_a3 === "IRN"; },
+  },
+  {
+    code: "TUR",
+    file: "tr-provinces.json",
+    objectName: "ne_10m_admin_1_states_provinces",
+    source: "admin1",
+    filter: function (f) { return f.properties.adm0_a3 === "TUR"; },
+  },
+  {
+    code: "TZA",
+    file: "tz-regions.json",
+    objectName: "ne_10m_admin_1_states_provinces",
+    source: "admin1",
+    filter: function (f) { return f.properties.adm0_a3 === "TZA"; },
+  },
+  {
+    code: "THA",
+    file: "th-provinces.json",
+    objectName: "ne_10m_admin_1_states_provinces",
+    source: "admin1",
+    filter: function (f) { return f.properties.adm0_a3 === "THA"; },
+  },
+  {
+    code: "ZAF",
+    file: "za-provinces.json",
+    objectName: "ne_10m_admin_1_states_provinces",
+    source: "admin1",
+    filter: function (f) { return f.properties.adm0_a3 === "ZAF"; },
+  },
+  {
+    code: "ITA",
+    file: "it-regions.json",
+    objectName: "ne_10m_admin_1_states_provinces",
+    source: "admin1",
+    filter: function (f) { return f.properties.adm0_a3 === "ITA"; },
+    postProcess: "mergeByRegion",
+    regionCodeMap: ITA_REGION_CODES,
+  },
+  {
+    code: "KEN",
+    file: "ke-counties.json",
+    objectName: "ne_10m_admin_1_states_provinces",
+    source: "admin1",
+    filter: function (f) { return f.properties.adm0_a3 === "KEN"; },
+  },
+  {
+    code: "MMR",
+    file: "mm-states.json",
+    objectName: "ne_10m_admin_1_states_provinces",
+    source: "admin1",
+    filter: function (f) { return f.properties.adm0_a3 === "MMR"; },
+  },
+  {
+    code: "ESP",
+    file: "es-communities.json",
+    objectName: "ne_10m_admin_1_states_provinces",
+    source: "admin1",
+    filter: function (f) { return f.properties.adm0_a3 === "ESP"; },
+    postProcess: "mergeByRegion",
+    regionCodeMap: ESP_REGION_CODES,
+  },
+  {
+    code: "POL",
+    file: "pl-voivodeships.json",
+    objectName: "ne_10m_admin_1_states_provinces",
+    source: "admin1",
+    filter: function (f) { return f.properties.adm0_a3 === "POL"; },
+  },
 ];
 
 async function fetchJSON(url) {
@@ -113,42 +257,45 @@ async function fetchJSON(url) {
 }
 
 /**
- * Merge French departments into 13 regions using TopoJSON merge.
- * Returns a new GeoJSON FeatureCollection with 13 region features.
+ * Generic merge of sub-features by their "region" property.
+ * Returns a new GeoJSON FeatureCollection with merged region features.
+ * Used for France (departments→regions), Italy (provinces→regions),
+ * Spain (provinces→communities), Philippines (provinces→regions).
  */
-function mergeFrenchRegions(departmentFeatures) {
-  // Group departments by region name
+function mergeByRegionField(features, countryCode, regionCodeMap) {
+  // Group features by region name
   var groups = {};
-  departmentFeatures.forEach(function (f) {
+  features.forEach(function (f) {
     var rg = f.properties.region;
+    if (!rg) return;
     if (groups[rg] === undefined) groups[rg] = [];
     groups[rg].push(f);
   });
 
-  // Build a topology from all departments first
-  var deptCollection = { type: "FeatureCollection", features: departmentFeatures };
-  var topo = topology({ depts: deptCollection });
-  var deptGeoms = topo.objects.depts.geometries;
+  // Build a topology from all features first
+  var collection = { type: "FeatureCollection", features: features };
+  var topo = topology({ parts: collection });
+  var partGeoms = topo.objects.parts.geometries;
 
-  // For each region, merge the department geometries
+  // For each region, merge geometries
   var regionFeatures = Object.keys(groups).map(function (regionName) {
-    var regionDepts = groups[regionName];
-    var deptNames = new Set(regionDepts.map(function (f) { return f.properties.name; }));
+    var regionParts = groups[regionName];
+    var partNames = new Set(regionParts.map(function (f) { return f.properties.name; }));
 
-    // Find matching geometries in the topology
-    var matchingGeoms = deptGeoms.filter(function (g) {
-      return deptNames.has(g.properties.name);
+    var matchingGeoms = partGeoms.filter(function (g) {
+      return partNames.has(g.properties.name);
     });
 
     var merged = merge(topo, matchingGeoms);
-    var code = FRA_REGION_CODES[regionName] || regionName;
+    var code = (regionCodeMap && regionCodeMap[regionName]) || regionName;
+    var isoPrefix = countryCode.substring(0, 2).toUpperCase();
 
     return {
       type: "Feature",
       properties: {
         name: regionName,
-        iso_3166_2: "FR-" + code,
-        adm0_a3: "FRA"
+        iso_3166_2: isoPrefix + "-" + code,
+        adm0_a3: countryCode
       },
       geometry: merged
     };
@@ -171,8 +318,8 @@ async function main() {
 
     var collection;
     if (cfg.postProcess === "mergeByRegion") {
-      collection = mergeFrenchRegions(filtered);
-      console.log(cfg.code + ": " + filtered.length + " departments -> " + collection.features.length + " regions");
+      collection = mergeByRegionField(filtered, cfg.code, cfg.regionCodeMap);
+      console.log(cfg.code + ": " + filtered.length + " features -> " + collection.features.length + " regions");
     } else {
       collection = { type: "FeatureCollection", features: filtered };
       console.log(cfg.code + ": " + collection.features.length + " features");

@@ -38,6 +38,7 @@
     "topojson-simplify": "^3.0.3",
     "vite": "^7.2.4",
     "vite-plugin-static-copy": "^3.2.0",
-    "vitest": "^4.0.18"
+    "vitest": "^4.0.18",
+    "xlsx": "^0.18.5"
   }
 }

@@ -1,0 +1,27 @@
+var COUNTIES_24 = [
+  {n:"Montgomery",p:1056910,la:39.12,lo:-77.21,dn:2077.6,rg:"South",cp:null,ar:509,ch:-0.5,fips:"24031",t:"county",parentFp:"24",parentIso:"USA"},
+  {n:"Prince George's",p:957189,la:38.81,lo:-76.85,dn:1903.9,rg:"South",cp:null,ar:503,ch:-1,fips:"24033",t:"county",parentFp:"24",parentIso:"USA"},
+  {n:"Baltimore",p:850737,la:39.38,lo:-76.59,dn:1345.6,rg:"South",cp:null,ar:632,ch:-0.4,fips:"24005",t:"county",parentFp:"24",parentIso:"USA"},
+  {n:"Anne Arundel",p:588109,la:38.98,lo:-76.61,dn:1308.3,rg:"South",cp:null,ar:450,ch:0,fips:"24003",t:"county",parentFp:"24",parentIso:"USA"},
+  {n:"Baltimore",p:584548,la:39.26,lo:-76.59,dn:6721.7,rg:"South",cp:null,ar:87,ch:-0.2,fips:"24510",t:"county",parentFp:"24",parentIso:"USA"},
+  {n:"Howard",p:332011,la:39.27,lo:-76.96,dn:1327.8,rg:"South",cp:null,ar:250,ch:-0.1,fips:"24027",t:"county",parentFp:"24",parentIso:"USA"},
+  {n:"Frederick",p:273829,la:39.51,lo:-77.41,dn:410.1,rg:"South",cp:null,ar:668,ch:0.8,fips:"24021",t:"county",parentFp:"24",parentIso:"USA"},
+  {n:"Harford",p:261059,la:39.51,lo:-76.28,dn:580.5,rg:"South",cp:null,ar:450,ch:0.1,fips:"24025",t:"county",parentFp:"24",parentIso:"USA"},
+  {n:"Carroll",p:173225,la:39.54,lo:-77.1,dn:385.1,rg:"South",cp:null,ar:450,ch:0.2,fips:"24013",t:"county",parentFp:"24",parentIso:"USA"},
+  {n:"Charles",p:167035,la:38.49,lo:-76.98,dn:340.1,rg:"South",cp:null,ar:491,ch:0.3,fips:"24017",t:"county",parentFp:"24",parentIso:"USA"},
+  {n:"Washington",p:154645,la:39.57,lo:-77.88,dn:330.4,rg:"South",cp:null,ar:468,ch:0,fips:"24043",t:"county",parentFp:"24",parentIso:"USA"},
+  {n:"St. Mary's",p:113814,la:38.26,lo:-76.55,dn:284.6,rg:"South",cp:null,ar:400,ch:0,fips:"24037",t:"county",parentFp:"24",parentIso:"USA"},
+  {n:"Cecil",p:103876,la:39.55,lo:-76.02,dn:271.1,rg:"South",cp:null,ar:383,ch:0.1,fips:"24015",t:"county",parentFp:"24",parentIso:"USA"},
+  {n:"Wicomico",p:103815,la:38.35,lo:-75.68,dn:266.2,rg:"South",cp:null,ar:390,ch:0.2,fips:"24045",t:"county",parentFp:"24",parentIso:"USA"},
+  {n:"Calvert",p:93244,la:38.55,lo:-76.57,dn:392.1,rg:"South",cp:null,ar:238,ch:0.5,fips:"24009",t:"county",parentFp:"24",parentIso:"USA"},
+  {n:"Allegany",p:68161,la:39.6,lo:-78.61,dn:156,rg:"South",cp:null,ar:437,ch:0.1,fips:"24001",t:"county",parentFp:"24",parentIso:"USA"},
+  {n:"Worcester",p:52827,la:38.23,lo:-75.4,dn:90,rg:"South",cp:null,ar:587,ch:0.7,fips:"24047",t:"county",parentFp:"24",parentIso:"USA"},
+  {n:"Queen Anne's",p:50316,la:39.03,lo:-76.09,dn:125,rg:"South",cp:null,ar:402,ch:0.9,fips:"24035",t:"county",parentFp:"24",parentIso:"USA"},
+  {n:"Talbot",p:37663,la:38.76,lo:-76.16,dn:117.2,rg:"South",cp:null,ar:321,ch:0.4,fips:"24041",t:"county",parentFp:"24",parentIso:"USA"},
+  {n:"Caroline",p:33320,la:38.86,lo:-75.87,dn:102.2,rg:"South",cp:null,ar:326,ch:0.1,fips:"24011",t:"county",parentFp:"24",parentIso:"USA"},
+  {n:"Dorchester",p:32557,la:38.42,lo:-76.04,dn:50.4,rg:"South",cp:null,ar:646,ch:0.1,fips:"24019",t:"county",parentFp:"24",parentIso:"USA"},
+  {n:"Garrett",p:28856,la:39.46,lo:-79.28,dn:43.9,rg:"South",cp:null,ar:657,ch:0.2,fips:"24023",t:"county",parentFp:"24",parentIso:"USA"},
+  {n:"Somerset",p:24672,la:38.1,lo:-75.82,dn:67,rg:"South",cp:null,ar:368,ch:0.2,fips:"24039",t:"county",parentFp:"24",parentIso:"USA"},
+  {n:"Kent",p:19289,la:39.23,lo:-76.05,dn:63.5,rg:"South",cp:null,ar:304,ch:0.5,fips:"24029",t:"county",parentFp:"24",parentIso:"USA"}
+];
+export { COUNTIES_24 };

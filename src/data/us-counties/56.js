@@ -1,0 +1,26 @@
+var COUNTIES_56 = [
+  {n:"Laramie",p:100316,la:41.33,lo:-104.73,dn:37.3,rg:"West",cp:null,ar:2688,ch:-0.2,fips:"56021",t:"county",parentFp:"56",parentIso:"USA"},
+  {n:"Natrona",p:79506,la:43.06,lo:-106.97,dn:14.8,rg:"West",cp:null,ar:5369,ch:-0.6,fips:"56025",t:"county",parentFp:"56",parentIso:"USA"},
+  {n:"Campbell",p:46857,la:44.33,lo:-105.59,dn:9.8,rg:"West",cp:null,ar:4798,ch:-0.4,fips:"56005",t:"county",parentFp:"56",parentIso:"USA"},
+  {n:"Sweetwater",p:42079,la:41.69,lo:-108.85,dn:4,rg:"West",cp:null,ar:10479,ch:-0.5,fips:"56037",t:"county",parentFp:"56",parentIso:"USA"},
+  {n:"Fremont",p:39402,la:43.37,lo:-109.07,dn:4.3,rg:"West",cp:null,ar:9248,ch:0.4,fips:"56013",t:"county",parentFp:"56",parentIso:"USA"},
+  {n:"Albany",p:37525,la:41.91,lo:-105.7,dn:8.7,rg:"West",cp:null,ar:4303,ch:1.2,fips:"56001",t:"county",parentFp:"56",parentIso:"USA"},
+  {n:"Sheridan",p:31176,la:44.79,lo:-107.26,dn:12.4,rg:"West",cp:null,ar:2520,ch:0.8,fips:"56033",t:"county",parentFp:"56",parentIso:"USA"},
+  {n:"Park",p:29878,la:44.34,lo:-109.8,dn:4.3,rg:"West",cp:null,ar:6956,ch:0.9,fips:"56029",t:"county",parentFp:"56",parentIso:"USA"},
+  {n:"Teton",p:23346,la:44.05,lo:-110.48,dn:5.5,rg:"West",cp:null,ar:4216,ch:0.1,fips:"56039",t:"county",parentFp:"56",parentIso:"USA"},
+  {n:"Uinta",p:20546,la:41.25,lo:-110.65,dn:9.8,rg:"West",cp:null,ar:2089,ch:0.5,fips:"56041",t:"county",parentFp:"56",parentIso:"USA"},
+  {n:"Lincoln",p:19794,la:42.54,lo:-110.63,dn:4.8,rg:"West",cp:null,ar:4090,ch:1.1,fips:"56023",t:"county",parentFp:"56",parentIso:"USA"},
+  {n:"Carbon",p:14609,la:41.76,lo:-106.99,dn:1.8,rg:"West",cp:null,ar:7946,ch:0.5,fips:"56007",t:"county",parentFp:"56",parentIso:"USA"},
+  {n:"Converse",p:13729,la:42.77,lo:-105.55,dn:3.2,rg:"West",cp:null,ar:4254,ch:-0.2,fips:"56009",t:"county",parentFp:"56",parentIso:"USA"},
+  {n:"Goshen",p:12592,la:42.04,lo:-104.35,dn:5.6,rg:"West",cp:null,ar:2234,ch:0.8,fips:"56015",t:"county",parentFp:"56",parentIso:"USA"},
+  {n:"Big Horn",p:11690,la:44.63,lo:-107.8,dn:3.7,rg:"West",cp:null,ar:3152,ch:1.5,fips:"56003",t:"county",parentFp:"56",parentIso:"USA"},
+  {n:"Sublette",p:8801,la:42.92,lo:-109.85,dn:1.8,rg:"West",cp:null,ar:4923,ch:0.8,fips:"56035",t:"county",parentFp:"56",parentIso:"USA"},
+  {n:"Platte",p:8618,la:42.28,lo:-105.03,dn:4.1,rg:"West",cp:null,ar:2104,ch:0.2,fips:"56031",t:"county",parentFp:"56",parentIso:"USA"},
+  {n:"Johnson",p:8536,la:44.15,lo:-106.8,dn:2.1,rg:"West",cp:null,ar:4164,ch:1.1,fips:"56019",t:"county",parentFp:"56",parentIso:"USA"},
+  {n:"Washakie",p:7725,la:43.88,lo:-107.91,dn:3.5,rg:"West",cp:null,ar:2239,ch:0.5,fips:"56043",t:"county",parentFp:"56",parentIso:"USA"},
+  {n:"Crook",p:7258,la:44.66,lo:-104.69,dn:2.5,rg:"West",cp:null,ar:2859,ch:1.1,fips:"56011",t:"county",parentFp:"56",parentIso:"USA"},
+  {n:"Weston",p:6870,la:43.88,lo:-104.63,dn:2.9,rg:"West",cp:null,ar:2397,ch:0.5,fips:"56045",t:"county",parentFp:"56",parentIso:"USA"},
+  {n:"Hot Springs",p:4616,la:43.73,lo:-108.52,dn:2.3,rg:"West",cp:null,ar:2000,ch:-0.1,fips:"56017",t:"county",parentFp:"56",parentIso:"USA"},
+  {n:"Niobrara",p:2460,la:43.06,lo:-104.49,dn:0.9,rg:"West",cp:null,ar:2628,ch:-0.3,fips:"56027",t:"county",parentFp:"56",parentIso:"USA"}
+];
+export { COUNTIES_56 };
