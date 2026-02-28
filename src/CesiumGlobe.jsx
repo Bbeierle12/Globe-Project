@@ -6,6 +6,8 @@ import { applyTerrainVisualSettings, configureIonToken, createTerrainProvider } 
 import { createPopulationLayer } from "./cesium/populationLayer.js";
 import { createCityLayer } from "./cesium/cityLayer.js";
 import { createBuildingsLayer } from "./cesium/buildingsLayer.js";
+import { createEarthquakeLayer } from "./cesium/earthquakeLayer.js";
+import { createLayerRegistry } from "./utils/layerRegistry.js";
 
 function markerSize(pop, base, range) {
   return base + Math.pow(pop / MP, 0.4) * range;
@@ -171,11 +173,8 @@ function cleanupAll(resources) {
   if (resources.handler) {
     try { resources.handler.destroy(); } catch { /* already cleaned */ }
   }
-  if (resources.populationLayer) {
-    try { resources.populationLayer.destroy(); } catch { /* already cleaned */ }
-  }
-  if (resources.cityLayer) {
-    try { resources.cityLayer.destroy(); } catch { /* already cleaned */ }
+  if (resources.registry) {
+    try { resources.registry.destroy(); } catch { /* already cleaned */ }
   }
   if (resources.viewer && !resources.viewer.isDestroyed()) {
     try { resources.viewer.destroy(); } catch { /* already cleaned */ }
@@ -210,6 +209,7 @@ export default function CesiumGlobe(props) {
     population: null,
     cities: null,
     buildings: null,
+    earthquakes: null,
   });
 
   var [loading, setLoading] = useState(true);
@@ -244,20 +244,28 @@ export default function CesiumGlobe(props) {
         resources.viewer = viewer;
         viewerRef.current = viewer;
 
+        var registry = createLayerRegistry();
+        resources.registry = registry;
+
         var populationLayer = await createPopulationLayer(viewer);
         if (dead) { cleanupAll(resources); return; }
-        resources.populationLayer = populationLayer;
+        registry.register("population", populationLayer);
         layersRef.current.population = populationLayer;
 
         var cityLayer = await createCityLayer(viewer);
         if (dead) { cleanupAll(resources); return; }
-        resources.cityLayer = cityLayer;
+        registry.register("cities", cityLayer);
         layersRef.current.cities = cityLayer;
 
         var buildings = await createBuildingsLayer(viewer);
         if (dead) { cleanupAll(resources); return; }
         layersRef.current.buildings = buildings;
         if (buildings) buildings.show = false;
+
+        var earthquakeLayer = await createEarthquakeLayer(viewer);
+        if (dead) { cleanupAll(resources); return; }
+        registry.register("earthquakes", earthquakeLayer);
+        layersRef.current.earthquakes = earthquakeLayer;
 
         var markers = createMarkers(viewer);
         markersRef.current.country = markers.country;
@@ -287,7 +295,7 @@ export default function CesiumGlobe(props) {
       cleanupAll(resources);
       viewerRef.current = null;
       handlerRef.current = null;
-      layersRef.current = { population: null, cities: null, buildings: null };
+      layersRef.current = { population: null, cities: null, buildings: null, earthquakes: null };
     };
   }, []);
 

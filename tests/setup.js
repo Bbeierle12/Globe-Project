@@ -19,10 +19,12 @@ vi.mock("cesium", () => ({
   Cartesian2: vi.fn(() => ({})),
   JulianDate: { now: vi.fn(() => ({})) },
   GeoJsonDataSource: { load: vi.fn() },
-  CustomDataSource: vi.fn(() => ({
-    entities: { add: vi.fn(), values: [] },
-    clustering: { enabled: false, pixelRange: 0, minimumClusterSize: 0 },
-  })),
+  CustomDataSource: vi.fn(function () {
+    return {
+      entities: { add: vi.fn(), removeAll: vi.fn(), values: [] },
+      clustering: { enabled: false, pixelRange: 0, minimumClusterSize: 0 },
+    };
+  }),
   Cesium3DTileset: { fromIonAssetId: vi.fn() },
   CesiumTerrainProvider: { fromIonAssetId: vi.fn() },
   EllipsoidTerrainProvider: vi.fn(),
