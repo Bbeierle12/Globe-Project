@@ -7,6 +7,7 @@
  */
 
 import { COUNTRIES, ISO_MAP } from "../../src/data/index.js";
+import { SUB_CONFIGS } from "../../src/config/subdivisionConfig.js";
 
 var PHASE_2_COUNTRIES = [
   { iso: "ETH", name: "Ethiopia", expectedMinSubs: 11, label: "Region" },
@@ -96,8 +97,6 @@ describe("Phase 2 SUB_CONFIGS entries", function () {
   var NEW_ISOS = ["ETH", "EGY", "PHL", "COD", "VNM", "IRN", "TUR", "TZA", "THA", "ZAF", "ITA", "KEN", "MMR", "ESP", "POL"];
 
   it("all 15 new ISOs have matching entries in SUB_CONFIGS", function () {
-    var { SUB_CONFIGS } = require("../../src/config/subdivisionConfig.js");
-
     NEW_ISOS.forEach(function (iso) {
       var found = SUB_CONFIGS.find(function (cfg) { return cfg.iso === iso; });
       expect(found).toBeDefined();
