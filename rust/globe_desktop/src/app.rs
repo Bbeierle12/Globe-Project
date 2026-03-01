@@ -6,6 +6,7 @@ use iced::widget::shader::Shader;
 use iced::theme::Palette;
 use iced::{Color, Element, Length, Subscription, Task, Theme};
 
+use crate::cesium::ion_api::{IonAsset, IonClient, IonStatus, load_ion_token};
 use crate::data::loader::load_countries_from_str;
 use crate::data::types::Country;
 use crate::renderer::GlobeProgram;
@@ -32,6 +33,10 @@ pub enum Message {
     CountriesLoaded(Vec<Country>),
     /// Animation tick for auto-rotation.
     Tick,
+    /// Cesium Ion connected successfully.
+    IonLoaded { username: String, assets: Vec<IonAsset> },
+    /// Cesium Ion connection failed.
+    IonFailed(String),
 }
 
 /// Application state.
@@ -44,6 +49,10 @@ pub struct GlobeApp {
     pub auto_rotate: bool,
     /// Accumulated auto-rotation angle (radians). Combined with drag yaw in GlobeState.
     pub rotation: f32,
+    /// Cesium Ion connection status.
+    pub ion_status: IonStatus,
+    /// Cesium Ion assets from /v1/assets.
+    pub ion_assets: Vec<IonAsset>,
 }
 
 impl GlobeApp {
@@ -56,15 +65,33 @@ impl GlobeApp {
             expanded: HashSet::new(),
             auto_rotate: true,
             rotation: 0.0,
+            ion_status: IonStatus::Loading,
+            ion_assets: Vec::new(),
         };
+
         let load_task = Task::perform(
-            async {
-                load_countries_from_str(COUNTRIES_JSON)
-                    .unwrap_or_default()
-            },
+            async { load_countries_from_str(COUNTRIES_JSON).unwrap_or_default() },
             Message::CountriesLoaded,
         );
-        (app, load_task)
+
+        let ion_task = Task::perform(
+            async {
+                let token = match load_ion_token() {
+                    Some(t) => t,
+                    None    => return Err("No token — set VITE_CESIUM_ION_TOKEN in .env".into()),
+                };
+                let client = IonClient::new(token);
+                let me     = client.get_me().await?;
+                let list   = client.list_assets(200).await?;
+                Ok((me.username, list.items))
+            },
+            |result: Result<(String, Vec<IonAsset>), String>| match result {
+                Ok((username, assets)) => Message::IonLoaded { username, assets },
+                Err(e)                 => Message::IonFailed(e),
+            },
+        );
+
+        (app, Task::batch([load_task, ion_task]))
     }
 
     pub fn title(&self) -> String {
@@ -127,6 +154,17 @@ impl GlobeApp {
                     self.rotation += 0.003;
                 }
             }
+            Message::IonLoaded { username, assets } => {
+                self.ion_status = IonStatus::Connected(username);
+                self.ion_assets = assets;
+            }
+            Message::IonFailed(e) => {
+                self.ion_status = if e.contains("No token") {
+                    IonStatus::NoToken
+                } else {
+                    IonStatus::Error(e)
+                };
+            }
         }
         Task::none()
     }
@@ -147,6 +185,8 @@ impl GlobeApp {
             self.selected_subdivision,
             &self.expanded,
             self.auto_rotate,
+            &self.ion_status,
+            &self.ion_assets,
         );
 
         let globe = Shader::new(GlobeProgram {

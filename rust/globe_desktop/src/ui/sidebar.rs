@@ -2,6 +2,7 @@ use iced::widget::{column, container, row, scrollable, text, text_input, Column}
 use iced::{Element, Length};
 
 use crate::app::Message;
+use crate::cesium::ion_api::{IonAsset, IonStatus};
 use crate::data::types::Country;
 use crate::utils::format::format_population;
 use crate::utils::search::{filter_countries, sort_by_population};
@@ -15,6 +16,8 @@ pub fn sidebar_view<'a>(
     selected_subdivision: Option<(usize, usize)>,
     expanded: &'a std::collections::HashSet<usize>,
     auto_rotate: bool,
+    ion_status: &IonStatus,
+    ion_assets: &[IonAsset],
 ) -> Element<'a, Message> {
     let search_bar = text_input("Search countries...", search_query)
         .on_input(Message::SearchChanged)
@@ -77,12 +80,55 @@ pub fn sidebar_view<'a>(
         _ => text("Select a country").size(12).into(),
     };
 
-    let content = column![header, scrollable_list, details]
+    let ion = ion_panel(ion_status, ion_assets);
+
+    let content = column![header, scrollable_list, details, ion]
         .spacing(4)
         .width(Length::Fixed(320.0))
         .height(Length::Fill);
 
     container(content).into()
+}
+
+/// Cesium Ion status + asset list panel.
+fn ion_panel(status: &IonStatus, assets: &[IonAsset]) -> Element<'static, Message> {
+    let header_str = match status {
+        IonStatus::Loading        => "Cesium Ion  ·  Connecting…".into(),
+        IonStatus::Connected(u)   => format!("Cesium Ion  ·  ✓ {u}"),
+        IonStatus::Error(e)       => format!("Cesium Ion  ·  ✗ {e}"),
+        IonStatus::NoToken        => "Cesium Ion  ·  No token".into(),
+    };
+
+    let mut rows: Vec<Element<'static, Message>> = vec![
+        text(header_str).size(11).into(),
+    ];
+
+    for a in assets.iter().take(25) {
+        let bytes_str = match a.bytes {
+            Some(b) if b > 0 => format!(" · {}", format_bytes(b)),
+            _                => String::new(),
+        };
+        rows.push(
+            text(format!("  {} · {}{}", a.name, a.asset_type, bytes_str))
+                .size(10)
+                .into(),
+        );
+    }
+    if assets.len() > 25 {
+        rows.push(text(format!("  … and {} more", assets.len() - 25)).size(10).into());
+    }
+
+    Column::with_children(rows)
+        .spacing(2)
+        .padding([6, 8])
+        .into()
+}
+
+fn format_bytes(b: u64) -> String {
+    if b >= 1_000_000_000 { format!("{:.1} GB", b as f64 / 1e9) }
+    else if b >= 1_000_000 { format!("{:.1} MB", b as f64 / 1e6) }
+    else if b >= 1_000     { format!("{:.1} KB", b as f64 / 1e3) }
+    else                   { format!("{b} B") }
 }
 
 /// Render a detail view panel. Takes ownership of DetailView to avoid lifetime issues.

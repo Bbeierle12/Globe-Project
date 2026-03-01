@@ -11,6 +11,9 @@ const MAX_MARKERS: u32 = 2048;
 const SPHERE_LAT_SEGS: u32 = 32;
 const SPHERE_LON_SEGS: u32 = 64;
 
+/// Pre-processed country border line segments (pairs of XYZ f32 triples).
+const BORDERS_BIN: &[u8] = include_bytes!("../../assets/borders.bin");
+
 // ─── GPU data structures ──────────────────────────────────────────────────────
 
 /// Uniform data for the globe sphere shader (80 bytes).
@@ -57,7 +60,19 @@ const QUAD_VERTICES: [QuadVertex; 4] = [
 ];
 const QUAD_INDICES: [u16; 6] = [0, 1, 2, 1, 3, 2];
 
-// ─── WGSL shaders ────────────────────────────────────────────────────────────
+// ─── WGSL shaders ─────────────────────────────────────────────────────────────
+
+const BORDER_SHADER: &str = r#"
+struct Uniforms { mvp: mat4x4<f32>, time: f32, _p0: f32, _p1: f32, _p2: f32 }
+@group(0) @binding(0) var<uniform> u: Uniforms;
+
+@vertex fn vs_main(@location(0) pos: vec3<f32>) -> @builtin(position) vec4<f32> {
+    return u.mvp * vec4<f32>(pos, 1.0);
+}
+@fragment fn fs_main() -> @location(0) vec4<f32> {
+    return vec4<f32>(0.50, 0.78, 0.68, 1.0);  // muted coastal teal
+}
+"#;
 
 const GLOBE_SHADER: &str = r#"
 struct GlobeUniforms {
@@ -171,6 +186,11 @@ pub struct GlobePipeline {
     globe_ubuf:        wgpu::Buffer,
     globe_bind_group:  wgpu::BindGroup,
 
+    // Country border lines (static, never updated)
+    borders_pipeline:  wgpu::RenderPipeline,
+    borders_vbuf:      wgpu::Buffer,
+    borders_vtx_count: u32,
+
     // Markers
     marker_pipeline:   wgpu::RenderPipeline,
     marker_quad_vbuf:  wgpu::Buffer,
@@ -266,6 +286,55 @@ impl Pipeline for GlobePipeline {
             primitive: wgpu::PrimitiveState {
                 topology:           wgpu::PrimitiveTopology::TriangleList,
                 cull_mode:          Some(wgpu::Face::Back),
+                ..Default::default()
+            },
+            depth_stencil: None,
+            multisample:   wgpu::MultisampleState::default(),
+            multiview:     None,
+            cache:         None,
+        });
+
+        // ── Country border lines ─────────────────────────────────────────────
+        let borders_vbuf = device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
+            label:    Some("borders_vbuf"),
+            contents: BORDERS_BIN,
+            usage:    wgpu::BufferUsages::VERTEX,
+        });
+        let borders_vtx_count = (BORDERS_BIN.len() / 12) as u32; // 3 × f32 per vertex
+
+        let border_shader = device.create_shader_module(wgpu::ShaderModuleDescriptor {
+            label:  Some("border_shader"),
+            source: wgpu::ShaderSource::Wgsl(BORDER_SHADER.into()),
+        });
+        let borders_pipeline = device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
+            label:  Some("borders_pipeline"),
+            layout: Some(&globe_pl),   // reuse globe pipeline layout (same bind group)
+            vertex: wgpu::VertexState {
+                module:      &border_shader,
+                entry_point: Some("vs_main"),
+                buffers: &[wgpu::VertexBufferLayout {
+                    array_stride: 12,
+                    step_mode:    wgpu::VertexStepMode::Vertex,
+                    attributes:   &[wgpu::VertexAttribute {
+                        format: wgpu::VertexFormat::Float32x3,
+                        offset: 0,
+                        shader_location: 0,
+                    }],
+                }],
+                compilation_options: wgpu::PipelineCompilationOptions::default(),
+            },
+            fragment: Some(wgpu::FragmentState {
+                module:      &border_shader,
+                entry_point: Some("fs_main"),
+                targets: &[Some(wgpu::ColorTargetState {
+                    format,
+                    blend:      None,
+                    write_mask: wgpu::ColorWrites::ALL,
+                })],
+                compilation_options: wgpu::PipelineCompilationOptions::default(),
+            }),
+            primitive: wgpu::PrimitiveState {
+                topology: wgpu::PrimitiveTopology::LineList,
                 ..Default::default()
             },
             depth_stencil: None,
@@ -372,6 +441,9 @@ impl Pipeline for GlobePipeline {
             sphere_idx_count,
             globe_ubuf,
             globe_bind_group,
+            borders_pipeline,
+            borders_vbuf,
+            borders_vtx_count,
             marker_pipeline,
             marker_quad_vbuf,
             marker_quad_ibuf,
@@ -429,6 +501,12 @@ impl Primitive for GlobePrimitive {
         render_pass.set_vertex_buffer(0, pipeline.sphere_vbuf.slice(..));
         render_pass.set_index_buffer(pipeline.sphere_ibuf.slice(..), wgpu::IndexFormat::Uint32);
         render_pass.draw_indexed(0..pipeline.sphere_idx_count, 0, 0..1);
+
+        // Draw country border lines (reuses globe bind group / MVP uniform)
+        render_pass.set_pipeline(&pipeline.borders_pipeline);
+        render_pass.set_bind_group(0, &pipeline.globe_bind_group, &[]);
+        render_pass.set_vertex_buffer(0, pipeline.borders_vbuf.slice(..));
+        render_pass.draw(0..pipeline.borders_vtx_count, 0..1);
 
         // Draw markers (instanced)
         if pipeline.marker_count > 0 {
