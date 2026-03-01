@@ -7,6 +7,7 @@ import { createPopulationLayer } from "./cesium/populationLayer.js";
 import { createCityLayer } from "./cesium/cityLayer.js";
 import { createBuildingsLayer } from "./cesium/buildingsLayer.js";
 import { createEarthquakeLayer } from "./cesium/earthquakeLayer.js";
+import { createGoogleTilesLayer } from "./cesium/googleTilesLayer.js";
 import { createLayerRegistry } from "./utils/layerRegistry.js";
 
 function markerSize(pop, base, range) {
@@ -219,6 +220,7 @@ export default function CesiumGlobe(props) {
     cities: null,
     buildings: null,
     earthquakes: null,
+    googleTiles: null,
   });
 
   var [loading, setLoading] = useState(true);
@@ -271,6 +273,13 @@ export default function CesiumGlobe(props) {
         layersRef.current.buildings = buildings;
         if (buildings) buildings.show = false;
 
+        var googleTiles = await createGoogleTilesLayer(viewer);
+        if (dead) { cleanupAll(resources); return; }
+        layersRef.current.googleTiles = googleTiles;
+        // Google tiles include 3D buildings — suppress the OSM buildings layer
+        // to avoid doubling VRAM usage when both would be active.
+        if (googleTiles && buildings) buildings.show = false;
+
         var earthquakeLayer = await createEarthquakeLayer(viewer);
         if (dead) { cleanupAll(resources); return; }
         registry.register("earthquakes", earthquakeLayer);
@@ -304,7 +313,7 @@ export default function CesiumGlobe(props) {
       cleanupAll(resources);
       viewerRef.current = null;
       handlerRef.current = null;
-      layersRef.current = { population: null, cities: null, buildings: null, earthquakes: null };
+      layersRef.current = { population: null, cities: null, buildings: null, earthquakes: null, googleTiles: null };
     };
   }, []);
 
