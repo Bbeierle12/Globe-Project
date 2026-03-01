@@ -2,8 +2,9 @@ import * as Cesium from "cesium";
 import { safeFetch } from "../utils/fetchUtils.js";
 
 function minPopulationForCameraHeight(height) {
-  if (height > 18000000) return 5000000;
-  if (height > 5000000) return 500000;
+  if (height > 18000000) return 10000000;
+  if (height > 12000000) return 5000000;
+  if (height > 5000000) return 1000000;
   return 100000;
 }
 

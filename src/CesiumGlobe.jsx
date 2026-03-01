@@ -45,6 +45,15 @@ function initViewer(mountEl, terrainProvider) {
     scene3DOnly: true,
     requestRenderMode: true,
     maximumRenderTimeChange: Infinity,
+    contextOptions: {
+      get webgl() {
+        return {
+          powerPreference: "high-performance",
+          antialias: false,
+          preserveDrawingBuffer: false,
+        };
+      },
+    },
     terrainProvider: terrainProvider,
     baseLayer: new Cesium.ImageryLayer(
       new Cesium.OpenStreetMapImageryProvider({ url: "https://tile.openstreetmap.org/" }),
@@ -303,11 +312,19 @@ export default function CesiumGlobe(props) {
     function() {
       var markerSets = markersRef.current.subdivisionsByIso;
       if (!markerSets || markerSets.size === 0) return;
+      var population = layersRef.current.population;
       markerSets.forEach(function(markers, iso) {
         var shouldShow = !!expanded[iso];
         markers.forEach(function(entity) {
           entity.show = shouldShow;
         });
+        if (population) {
+          if (shouldShow) {
+            population.loadSubdivision(iso);
+          } else {
+            population.unloadSubdivision(iso);
+          }
+        }
       });
       if (viewerRef.current) viewerRef.current.scene.requestRender();
     },
@@ -323,10 +340,10 @@ export default function CesiumGlobe(props) {
       Object.keys(loadedCounties).forEach(function(fp) {
         var counties = loadedCounties[fp];
         if (!counties || !counties.length) return;
-        if (!map.has(fp)) {
+        if (!map.has(fp) && expandedStates[fp]) {
           var entities = counties.map(function(county) {
             var entity = viewer.entities.add({
-              show: !!expandedStates[fp],
+              show: true,
               position: Cesium.Cartesian3.fromDegrees(county.lo, county.la, 0),
               point: {
                 pixelSize: markerSize(county.p, 3, 7),
@@ -345,11 +362,17 @@ export default function CesiumGlobe(props) {
         }
       });
 
+      var toRemove = [];
       map.forEach(function(entities, fp) {
-        var visible = !!expandedStates[fp];
-        entities.forEach(function(entity) {
-          entity.show = visible;
-        });
+        if (!expandedStates[fp]) {
+          entities.forEach(function(entity) {
+            viewer.entities.remove(entity);
+          });
+          toRemove.push(fp);
+        }
+      });
+      toRemove.forEach(function(fp) {
+        map.delete(fp);
       });
 
       viewer.scene.requestRender();

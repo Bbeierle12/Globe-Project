@@ -60,7 +60,12 @@ async function createPopulationLayer(viewer, options) {
 
   var selectionIndex = new Map();
   var highlighted = [];
-  var subDataSources = [];
+  var loadedSubs = new Map();
+
+  var configByIso = {};
+  SUB_CONFIGS.forEach(function(cfg) {
+    configByIso[cfg.iso] = cfg;
+  });
 
   function indexEntity(entity, entry) {
     var key = getSelectionKey(entry);
@@ -76,23 +81,12 @@ async function createPopulationLayer(viewer, options) {
     indexEntity(entity, entry);
   }
 
-  var fetches = [safeFetch(EARTH_TOPO_URL, fetchFn)];
-  SUB_CONFIGS.forEach(function(cfg) {
-    fetches.push(safeFetch(cfg.url, fetchFn));
-  });
-  var settled = await Promise.allSettled(fetches);
+  // --- Only fetch world boundaries at startup ---
+  var worldTopo = await safeFetch(EARTH_TOPO_URL, fetchFn);
+  if (!worldTopo) throw new Error("Failed to load world TopoJSON");
 
-  if (settled[0].status !== "fulfilled") {
-    throw new Error("Failed to load world TopoJSON: " + (settled[0].reason || "unknown"));
-  }
-
-  var results = settled.map(function(r, i) {
-    if (r.status === "fulfilled") return r.value;
-    console.warn("Failed to load subdivision data for " + (i > 0 ? SUB_CONFIGS[i - 1].iso : "world") + ":", r.reason);
-    return null;
-  });
-
-  var worldGeo = decodeTopo(results[0], "countries");
+  var worldGeo = decodeTopo(worldTopo, "countries");
+  worldTopo = null;
   var worldFeatures = [];
   var countryByFeatureId = new Map();
 
@@ -111,6 +105,8 @@ async function createPopulationLayer(viewer, options) {
     });
   });
 
+  worldGeo = null;
+
   var countryDataSource = await Cesium.GeoJsonDataSource.load(
     { type: "FeatureCollection", features: worldFeatures },
     {
@@ -120,6 +116,8 @@ async function createPopulationLayer(viewer, options) {
       strokeWidth: 0,
     },
   );
+
+  worldFeatures = null;
   viewer.dataSources.add(countryDataSource);
 
   countryDataSource.entities.values.forEach(function(entity) {
@@ -129,11 +127,19 @@ async function createPopulationLayer(viewer, options) {
     assignEntityEntry(entity, entry);
   });
 
-  for (var i = 0; i < SUB_CONFIGS.length; i++) {
-    var cfg = SUB_CONFIGS[i];
-    var topo = results[i + 1];
-    if (!topo) continue;
+  // --- On-demand subdivision loading ---
+
+  async function loadSubdivision(iso) {
+    if (loadedSubs.has(iso)) return;
+    var cfg = configByIso[iso];
+    if (!cfg) return;
+
+    var topo = await safeFetch(cfg.url, fetchFn);
+    if (!topo) return;
+
     var geo = decodeTopo(topo, cfg.objectName);
+    topo = null;
+
     var map = subdivisionMaps[cfg.iso] || {};
     var featureToEntry = new Map();
     var features = [];
@@ -153,6 +159,8 @@ async function createPopulationLayer(viewer, options) {
       });
     });
 
+    geo = null;
+
     var ds = await Cesium.GeoJsonDataSource.load(
       { type: "FeatureCollection", features: features },
       {
@@ -162,14 +170,40 @@ async function createPopulationLayer(viewer, options) {
         strokeWidth: 0,
       },
     );
+
+    features = null;
     viewer.dataSources.add(ds);
+
+    var indexedKeys = [];
     ds.entities.values.forEach(function(entity) {
       var featureId = String(getEntityProperty(entity, "__featureId") || "");
       var entry = featureToEntry.get(featureId) || null;
       stylePopulationEntity(entity, entry ? entry.p : 1);
       assignEntityEntry(entity, entry);
+      if (entry) {
+        var key = getSelectionKey(entry);
+        if (key) indexedKeys.push(key);
+      }
     });
-    subDataSources.push(ds);
+
+    featureToEntry = null;
+    loadedSubs.set(iso, { ds: ds, keys: indexedKeys });
+    viewer.scene.requestRender();
+  }
+
+  function unloadSubdivision(iso) {
+    var record = loadedSubs.get(iso);
+    if (!record) return;
+
+    clearHighlight();
+
+    record.keys.forEach(function(key) {
+      selectionIndex.delete(key);
+    });
+
+    viewer.dataSources.remove(record.ds, true);
+    loadedSubs.delete(iso);
+    viewer.scene.requestRender();
   }
 
   function clearHighlight() {
@@ -194,25 +228,28 @@ async function createPopulationLayer(viewer, options) {
   }
 
   function setSubdivisionsVisible(show) {
-    subDataSources.forEach(function(ds) {
-      ds.show = show;
+    loadedSubs.forEach(function(record) {
+      record.ds.show = show;
     });
   }
 
   function destroy() {
     clearHighlight();
     viewer.dataSources.remove(countryDataSource, true);
-    subDataSources.forEach(function(ds) {
-      viewer.dataSources.remove(ds, true);
+    loadedSubs.forEach(function(record) {
+      viewer.dataSources.remove(record.ds, true);
     });
+    loadedSubs.clear();
+    selectionIndex.clear();
   }
 
   return {
     countryDataSource: countryDataSource,
-    subDataSources: subDataSources,
     destroy: destroy,
     highlightSelection: highlightSelection,
     setSubdivisionsVisible: setSubdivisionsVisible,
+    loadSubdivision: loadSubdivision,
+    unloadSubdivision: unloadSubdivision,
   };
 }
 

@@ -28,6 +28,7 @@ function applyTerrainVisualSettings(viewer) {
   viewer.scene.globe.dynamicAtmosphereLighting = true;
   viewer.scene.globe.dynamicAtmosphereLightingFromSun = true;
   viewer.scene.globe.oceanNormalMapUrl = Cesium.buildModuleUrl("Assets/Textures/waterNormalsSmall.jpg");
+  viewer.scene.globe.tileCacheSize = 500;
 }
 
 export { applyTerrainVisualSettings, configureIonToken, createTerrainProvider };
