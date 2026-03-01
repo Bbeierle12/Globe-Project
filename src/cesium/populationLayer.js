@@ -1,6 +1,6 @@
 import * as Cesium from "cesium";
 import { ID_MAP, ISO_MAP, SUB_CONFIGS, findCountry } from "../data/index.js";
-import { decodeTopo, pClr } from "./topoUtils.js";
+import { decodeTopo } from "./topoUtils.js";
 import { safeFetch } from "../utils/fetchUtils.js";
 
 var EARTH_TOPO_URL = "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json";
@@ -37,18 +37,6 @@ function getEntityProperty(entity, key) {
   return entity.properties[key].getValue(Cesium.JulianDate.now());
 }
 
-function colorFromPopulation(pop, alpha) {
-  var rgb = pClr(Math.max(1, pop || 1));
-  return Cesium.Color.fromBytes(rgb[0], rgb[1], rgb[2], alpha);
-}
-
-function stylePopulationEntity(entity, pop) {
-  if (!entity.polygon) return;
-  var fill = colorFromPopulation(pop, 170);
-  entity.__baseFill = fill;
-  entity.polygon.material = fill;
-  entity.polygon.outline = false;
-}
 
 async function createPopulationLayer(viewer, options) {
   var fetchFn = (options && options.fetchFn) || fetch;
@@ -59,7 +47,6 @@ async function createPopulationLayer(viewer, options) {
   });
 
   var selectionIndex = new Map();
-  var highlighted = [];
   var loadedSubs = new Map();
 
   var configByIso = {};
@@ -111,7 +98,7 @@ async function createPopulationLayer(viewer, options) {
     { type: "FeatureCollection", features: worldFeatures },
     {
       clampToGround: true,
-      fill: Cesium.Color.fromCssColorString("#1b3552").withAlpha(0.5),
+      fill: Cesium.Color.TRANSPARENT,
       stroke: Cesium.Color.TRANSPARENT,
       strokeWidth: 0,
     },
@@ -123,7 +110,6 @@ async function createPopulationLayer(viewer, options) {
   countryDataSource.entities.values.forEach(function(entity) {
     var featureId = String(getEntityProperty(entity, "__featureId") || "");
     var entry = countryByFeatureId.get(featureId) || null;
-    stylePopulationEntity(entity, entry ? entry.p : 1);
     assignEntityEntry(entity, entry);
   });
 
@@ -165,7 +151,7 @@ async function createPopulationLayer(viewer, options) {
       { type: "FeatureCollection", features: features },
       {
         clampToGround: true,
-        fill: Cesium.Color.fromCssColorString("#2a4662").withAlpha(0.55),
+        fill: Cesium.Color.TRANSPARENT,
         stroke: Cesium.Color.TRANSPARENT,
         strokeWidth: 0,
       },
@@ -178,7 +164,6 @@ async function createPopulationLayer(viewer, options) {
     ds.entities.values.forEach(function(entity) {
       var featureId = String(getEntityProperty(entity, "__featureId") || "");
       var entry = featureToEntry.get(featureId) || null;
-      stylePopulationEntity(entity, entry ? entry.p : 1);
       assignEntityEntry(entity, entry);
       if (entry) {
         var key = getSelectionKey(entry);
@@ -195,8 +180,6 @@ async function createPopulationLayer(viewer, options) {
     var record = loadedSubs.get(iso);
     if (!record) return;
 
-    clearHighlight();
-
     record.keys.forEach(function(key) {
       selectionIndex.delete(key);
     });
@@ -206,27 +189,6 @@ async function createPopulationLayer(viewer, options) {
     viewer.scene.requestRender();
   }
 
-  function clearHighlight() {
-    highlighted.forEach(function(entity) {
-      if (!entity || !entity.polygon || !entity.__baseFill) return;
-      entity.polygon.material = entity.__baseFill;
-    });
-    highlighted = [];
-  }
-
-  function highlightSelection(selection) {
-    clearHighlight();
-    var key = getSelectionKey(selection);
-    if (!key) return;
-    var entities = selectionIndex.get(key) || [];
-    entities.forEach(function(entity) {
-      if (!entity || !entity.polygon || !entity.__baseFill) return;
-      var bright = entity.__baseFill.brighten(0.33, new Cesium.Color());
-      entity.polygon.material = Cesium.Color.fromAlpha(bright, 0.85);
-      highlighted.push(entity);
-    });
-  }
-
   function setSubdivisionsVisible(show) {
     loadedSubs.forEach(function(record) {
       record.ds.show = show;
@@ -234,7 +196,6 @@ async function createPopulationLayer(viewer, options) {
   }
 
   function destroy() {
-    clearHighlight();
     viewer.dataSources.remove(countryDataSource, true);
     loadedSubs.forEach(function(record) {
       viewer.dataSources.remove(record.ds, true);
@@ -246,7 +207,6 @@ async function createPopulationLayer(viewer, options) {
   return {
     countryDataSource: countryDataSource,
     destroy: destroy,
-    highlightSelection: highlightSelection,
     setSubdivisionsVisible: setSubdivisionsVisible,
     loadSubdivision: loadSubdivision,
     unloadSubdivision: unloadSubdivision,

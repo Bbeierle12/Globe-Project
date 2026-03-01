@@ -394,10 +394,6 @@ export default function CesiumGlobe(props) {
       var viewer = viewerRef.current;
       if (!viewer) return;
 
-      if (layersRef.current.population) {
-        layersRef.current.population.highlightSelection(selection);
-      }
-
       if (!selection) {
         viewer.scene.requestRender();
         return;
