@@ -1,4 +1,5 @@
 import { render, screen, waitFor } from "@testing-library/react";
+import { useAppStore } from "../../src/store/useAppStore.js";
 
 vi.mock("../../src/cesium/terrainSetup.js", function() {
   return {
@@ -67,6 +68,7 @@ vi.mock("cesium", async function() {
       },
     },
     entities: { add: vi.fn(function(opts) { return opts; }), values: [] },
+    imageryLayers: { get: vi.fn(function() { return { show: true }; }) },
     container: { style: {} },
     isDestroyed: vi.fn(function() { return false; }),
     destroy: vi.fn(),
@@ -108,6 +110,8 @@ vi.mock("cesium", async function() {
     NearFarScalar: vi.fn(),
     Cesium3DTileStyle: vi.fn(),
     EasingFunction: { CUBIC_OUT: {} },
+    GoogleMaps: { defaultApiKey: "" },
+    createGooglePhotorealistic3DTileset: vi.fn().mockResolvedValue({ show: true }),
     buildModuleUrl: vi.fn(function() { return ""; }),
   };
 });
@@ -115,25 +119,27 @@ vi.mock("cesium", async function() {
 import CesiumGlobe from "../../src/CesiumGlobe.jsx";
 
 describe("CesiumGlobe", function() {
-  var defaultProps = {
-    onHover: vi.fn(),
-    onSelect: vi.fn(),
-    selection: null,
-    expanded: {},
-    expandedStates: {},
-    loadedCounties: {},
-    autoRotate: true,
-  };
+  beforeEach(function() {
+    useAppStore.setState({
+      sel: null,
+      hov: null,
+      expanded: {},
+      expandedStates: {},
+      loadedCounties: {},
+      autoR: true,
+      layers: { buildings: false, earthquakes: true, cities: true, googleTiles: true, population: true },
+      apiKeys: { cesiumIon: "", googleMaps: "" },
+    });
+  });
 
-  it("renders container div with correct styling", function() {
-    var result = render(<CesiumGlobe {...defaultProps} />);
+  it("renders container div", function() {
+    var result = render(<CesiumGlobe />);
     expect(result.container.firstChild).toBeTruthy();
-    expect(result.container.firstChild.style.position).toBe("relative");
+    expect(result.container.firstChild.className).toContain("relative");
   });
 
   it("shows loading indicator initially and removes it after init", async function() {
-    render(<CesiumGlobe {...defaultProps} />);
-    // After async init completes, loading should be removed
+    render(<CesiumGlobe />);
     await waitFor(function() {
       expect(screen.queryByText("Loading globe layers...")).not.toBeInTheDocument();
     });

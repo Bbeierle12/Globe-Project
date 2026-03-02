@@ -5,7 +5,7 @@ import Tooltip from "./components/Tooltip.jsx";
 import SettingsModal from "./components/SettingsModal.jsx";
 
 function App() {
-  const hov = useAppStore((state) => state.hov);
+  var hov = useAppStore(function (s) { return s.hov; });
 
   return (
     <div className="w-screen h-screen bg-[#050810] flex font-['Segoe_UI',system-ui,sans-serif] text-[#b8c8dd] overflow-hidden relative">

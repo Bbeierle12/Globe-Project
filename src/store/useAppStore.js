@@ -1,76 +1,83 @@
 import { create } from "zustand";
 import { COUNTY_FILE_MAP } from "../data/us-counties/index.js";
 
-export const useAppStore = create((set, get) => ({
-  // UI State
-  isSettingsOpen: false,
-  search: "",
-  setSettingsOpen: (isOpen) => set({ isSettingsOpen: isOpen }),
-  toggleSettings: () => set((state) => ({ isSettingsOpen: !state.isSettingsOpen })),
-  setSearch: (search) => set({ search }),
+var useAppStore = create(function (set, get) {
+  return {
+    // UI State
+    isSettingsOpen: false,
+    search: "",
+    setSettingsOpen: function (isOpen) { set({ isSettingsOpen: isOpen }); },
+    toggleSettings: function () { set(function (s) { return { isSettingsOpen: !s.isSettingsOpen }; }); },
+    setSearch: function (search) { set({ search: search }); },
 
-  // Selection & Hover State
-  hov: null,
-  sel: null,
-  setHov: (hov) => set({ hov }),
-  setSel: (sel) => set({ sel }),
+    // Selection & Hover State
+    hov: null,
+    sel: null,
+    setHov: function (hov) { set({ hov: hov }); },
+    setSel: function (sel) { set({ sel: sel }); },
 
-  // Expansion State
-  expanded: {},
-  expandedStates: {},
-  countyLoading: {},
-  loadedCounties: {},
+    // Expansion State
+    expanded: {},
+    expandedStates: {},
+    countyLoading: {},
+    loadedCounties: {},
 
-  toggleExpand: (iso) => set((state) => {
-    return { expanded: { ...state.expanded, [iso]: !state.expanded[iso] } };
-  }),
+    toggleExpand: function (iso) {
+      set(function (s) { return { expanded: { ...s.expanded, [iso]: !s.expanded[iso] } }; });
+    },
 
-  toggleExpandState: (fp) => {
-    const state = get();
-    const willExpand = !state.expandedStates[fp];
-    set({ expandedStates: { ...state.expandedStates, [fp]: willExpand } });
+    toggleExpandState: function (fp) {
+      var s = get();
+      var willExpand = !s.expandedStates[fp];
+      set({ expandedStates: { ...s.expandedStates, [fp]: willExpand } });
 
-    if (!willExpand || state.loadedCounties[fp] || state.countyLoading[fp]) return;
-    const loader = COUNTY_FILE_MAP[fp];
-    if (!loader) return;
+      if (!willExpand || s.loadedCounties[fp] || s.countyLoading[fp]) return;
+      var loader = COUNTY_FILE_MAP[fp];
+      if (!loader) return;
 
-    set({ countyLoading: { ...state.countyLoading, [fp]: true } });
+      set({ countyLoading: { ...s.countyLoading, [fp]: true } });
 
-    loader()
-      .then((mod) => {
-        const varName = "COUNTIES_" + fp;
-        const counties = mod[varName] || [];
-        set((s) => ({
-          loadedCounties: { ...s.loadedCounties, [fp]: counties },
-          countyLoading: { ...s.countyLoading, [fp]: false }
-        }));
-      })
-      .catch((error) => {
-        console.error("Failed to load counties for state " + fp + ":", error);
-        set((s) => ({ countyLoading: { ...s.countyLoading, [fp]: false } }));
-      });
-  },
+      loader()
+        .then(function (mod) {
+          var varName = "COUNTIES_" + fp;
+          var counties = mod[varName] || [];
+          set(function (prev) {
+            return {
+              loadedCounties: { ...prev.loadedCounties, [fp]: counties },
+              countyLoading: { ...prev.countyLoading, [fp]: false },
+            };
+          });
+        })
+        .catch(function (error) {
+          console.error("Failed to load counties for state " + fp + ":", error);
+          set(function (prev) { return { countyLoading: { ...prev.countyLoading, [fp]: false } }; });
+        });
+    },
 
-  // Settings State
-  autoR: true,
-  setAutoR: (autoR) => set({ autoR }),
+    // Settings State
+    autoR: true,
+    setAutoR: function (autoR) { set({ autoR: autoR }); },
 
-  layers: {
-    buildings: false, // Turned off initially in the globe because of googleTiles, let's keep it false
-    earthquakes: true,
-    cities: true,
-    googleTiles: true,
-    population: true,
-  },
-  toggleLayer: (layerName) => set((state) => ({
-    layers: { ...state.layers, [layerName]: !state.layers[layerName] }
-  })),
+    layers: {
+      buildings: false,
+      earthquakes: true,
+      cities: true,
+      googleTiles: true,
+      population: true,
+    },
+    toggleLayer: function (layerName) {
+      set(function (s) { return { layers: { ...s.layers, [layerName]: !s.layers[layerName] } }; });
+    },
 
-  apiKeys: {
-    cesiumIon: "",
-    googleMaps: "",
-  },
-  setApiKey: (keyName, value) => set((state) => ({
-    apiKeys: { ...state.apiKeys, [keyName]: value }
-  })),
-}));
+    // API key overrides (consumed by cesium layer init, not exposed in UI yet)
+    apiKeys: {
+      cesiumIon: "",
+      googleMaps: "",
+    },
+    setApiKey: function (keyName, value) {
+      set(function (s) { return { apiKeys: { ...s.apiKeys, [keyName]: value } }; });
+    },
+  };
+});
+
+export { useAppStore };

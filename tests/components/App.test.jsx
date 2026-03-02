@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react";
+import { useAppStore } from "../../src/store/useAppStore.js";
 
 vi.mock("../../src/CesiumGlobe.jsx", function() {
   return {
@@ -14,6 +15,20 @@ vi.mock("../../src/CesiumGlobe.jsx", function() {
 import App from "../../src/App.jsx";
 
 describe("App", function() {
+  beforeEach(function() {
+    useAppStore.setState({
+      search: "",
+      sel: null,
+      hov: null,
+      expanded: {},
+      expandedStates: {},
+      countyLoading: {},
+      loadedCounties: {},
+      autoR: true,
+      isSettingsOpen: false,
+    });
+  });
+
   it("renders without crashing", function() {
     render(<App />);
     expect(screen.getByTestId("cesium-globe")).toBeInTheDocument();
@@ -36,8 +51,8 @@ describe("App", function() {
     expect(searchInput.value).toBe("");
   });
 
-  it("renders rotation button as Rotating by default", function() {
+  it("renders settings gear button", function() {
     render(<App />);
-    expect(screen.getByText("Rotating")).toBeInTheDocument();
+    expect(screen.getByTitle("Settings")).toBeInTheDocument();
   });
 });

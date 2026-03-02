@@ -199,14 +199,14 @@ export { markerSize, getEntryHeight, getPickedEntry };
 import { useAppStore } from "./store/useAppStore.js";
 
 export default function CesiumGlobe() {
-  const onHover = useAppStore((state) => state.setHov);
-  const onSelect = useAppStore((state) => state.setSel);
-  const autoRotate = useAppStore((state) => state.autoR);
-  const expanded = useAppStore((state) => state.expanded);
-  const expandedStates = useAppStore((state) => state.expandedStates);
-  const loadedCounties = useAppStore((state) => state.loadedCounties);
-  const selection = useAppStore((state) => state.sel);
-  const layersToggleState = useAppStore((state) => state.layers);
+  var onHover = useAppStore(function (s) { return s.setHov; });
+  var onSelect = useAppStore(function (s) { return s.setSel; });
+  var autoRotate = useAppStore(function (s) { return s.autoR; });
+  var expanded = useAppStore(function (s) { return s.expanded; });
+  var expandedStates = useAppStore(function (s) { return s.expandedStates; });
+  var loadedCounties = useAppStore(function (s) { return s.loadedCounties; });
+  var selection = useAppStore(function (s) { return s.sel; });
+  var layersToggleState = useAppStore(function (s) { return s.layers; });
 
   var mountRef = useRef(null);
   var viewerRef = useRef(null);
@@ -448,52 +448,17 @@ export default function CesiumGlobe() {
   );
 
   return (
-    <div ref={mountRef} style={{ flex: 1, position: "relative", cursor: "grab" }}>
+    <div ref={mountRef} className="flex-1 relative cursor-grab">
       {loading && (
-        <div
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            background: "rgba(5,8,16,0.7)",
-            zIndex: 20,
-          }}
-        >
-          <div style={{ textAlign: "center" }}>
-            <div
-              style={{
-                width: 32,
-                height: 32,
-                border: "3px solid rgba(60,120,220,0.15)",
-                borderTopColor: "#3a80e0",
-                borderRadius: "50%",
-                animation: "globespin 0.8s linear infinite",
-                margin: "0 auto 8px",
-              }}
-            />
-            <div style={{ color: "#5a7ea0", fontSize: 12 }}>Loading globe layers...</div>
+        <div className="absolute inset-0 flex items-center justify-center bg-[#050810]/70 z-20">
+          <div className="text-center">
+            <div className="w-8 h-8 border-3 border-[rgba(60,120,220,0.15)] border-t-[#3a80e0] rounded-full animate-[globespin_0.8s_linear_infinite] mx-auto mb-2" />
+            <div className="text-[#5a7ea0] text-xs">Loading globe layers...</div>
           </div>
         </div>
       )}
       {err && (
-        <div
-          style={{
-            position: "absolute",
-            bottom: 10,
-            left: 10,
-            background: "rgba(200,50,50,0.8)",
-            color: "white",
-            padding: "4px 10px",
-            borderRadius: 4,
-            fontSize: 11,
-            zIndex: 20,
-          }}
-        >
+        <div className="absolute bottom-2.5 left-2.5 bg-red-600/80 text-white py-1 px-2.5 rounded text-[11px] z-20">
           {err}
         </div>
       )}

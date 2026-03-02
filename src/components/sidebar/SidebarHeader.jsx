@@ -1,18 +1,18 @@
-import React from "react";
 import { useAppStore } from "../../store/useAppStore.js";
 
 function SidebarHeader() {
-  const search = useAppStore((state) => state.search);
-  const setSearch = useAppStore((state) => state.setSearch);
-  const toggleSettings = useAppStore((state) => state.toggleSettings);
+  var search = useAppStore(function (s) { return s.search; });
+  var setSearch = useAppStore(function (s) { return s.setSearch; });
+  var toggleSettings = useAppStore(function (s) { return s.toggleSettings; });
 
   return (
     <div className="flex items-center gap-3 p-3 border-b border-blue-900/30 bg-[#0a0f1c] shrink-0">
       <input
         type="text"
+        aria-label="Search countries"
         placeholder="Search countries, states, counties..."
         value={search}
-        onChange={(e) => setSearch(e.target.value)}
+        onChange={function (e) { setSearch(e.target.value); }}
         className="flex-1 bg-[#050810] border border-blue-900/50 rounded-lg px-3 py-1.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition-colors shadow-inner"
       />
       <button

@@ -1,5 +1,15 @@
 import "@testing-library/jest-dom";
 
+// Polyfill ResizeObserver for jsdom (used by NavigationList virtual scroll).
+if (typeof globalThis.ResizeObserver === "undefined") {
+  globalThis.ResizeObserver = class ResizeObserver {
+    constructor(cb) { this._cb = cb; }
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  };
+}
+
 // Global Cesium mock for unit and component tests.
 // Individual tests can override specific exports via vi.mocked().
 vi.mock("cesium", () => ({

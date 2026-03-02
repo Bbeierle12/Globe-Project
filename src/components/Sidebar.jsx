@@ -1,8 +1,9 @@
-import React from "react";
 import SidebarHeader from "./sidebar/SidebarHeader.jsx";
 import NavigationList from "./sidebar/NavigationList.jsx";
 import EntityDetails from "./sidebar/EntityDetails.jsx";
 import { COUNTRIES } from "../data/index.js";
+
+export { fmt, cachedClr, itemKey, tier } from "./sidebar/sidebarFormatters.js";
 
 export default function Sidebar() {
   return (

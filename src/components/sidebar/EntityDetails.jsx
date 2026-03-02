@@ -1,28 +1,20 @@
-import React from "react";
 import { useAppStore } from "../../store/useAppStore.js";
 import { ISO_MAP, WORLD_POP, RC } from "../../data/index.js";
-
-function tier(p) {
-  if (p >= 2e7) return { l: "Mega", c: "#e74c3c" };
-  if (p >= 1e7) return { l: "Large", c: "#e67e22" };
-  if (p >= 5e6) return { l: "Medium", c: "#b7950b" };
-  if (p >= 1e6) return { l: "Small", c: "#16a085" };
-  return { l: "Micro", c: "#2980b9" };
-}
+import { tier } from "./sidebarFormatters.js";
 
 function EntityDetails() {
-  const sel = useAppStore((state) => state.sel);
+  var sel = useAppStore(function (s) { return s.sel; });
 
   if (!sel) return null;
 
-  const isSt = sel.t === "s";
-  const isCty = sel.t === "county";
-  const isCity = sel.t === "city";
-  const selParent = isSt && sel.parentIso ? ISO_MAP[sel.parentIso] : null;
-  const selParentState =
+  var isSt = sel.t === "s";
+  var isCty = sel.t === "county";
+  var isCity = sel.t === "city";
+  var selParent = isSt && sel.parentIso ? ISO_MAP[sel.parentIso] : null;
+  var selParentState =
     isCty && sel.parentFp
       ? ISO_MAP.USA
-        ? ISO_MAP.USA.subdivisions.find((s) => s.fp === sel.parentFp)
+        ? ISO_MAP.USA.subdivisions.find(function (s) { return s.fp === sel.parentFp; })
         : null
       : null;
 
@@ -31,12 +23,13 @@ function EntityDetails() {
       <div className="flex items-center gap-1.5 flex-wrap mb-1">
         <span className="text-sm font-bold text-[#dce6f2]">{sel.n}</span>
         <span
-          className={`text-[9px] font-bold px-1.5 py-[1px] rounded-sm ${
-            isCity ? "text-[#f2d59a] bg-[#f2d59a]/10" :
-            isCty ? "text-[#aaddff] bg-[#aaddff]/10" :
-            isSt ? "text-[#5ea8f0] bg-[#5ea8f0]/10" :
-            "text-[#7ec87e] bg-[#7ec87e]/10"
-          }`}
+          className={
+            "text-[9px] font-bold px-1.5 py-[1px] rounded-sm " +
+            (isCity ? "text-[#f2d59a] bg-[#f2d59a]/10" :
+             isCty ? "text-[#aaddff] bg-[#aaddff]/10" :
+             isSt ? "text-[#5ea8f0] bg-[#5ea8f0]/10" :
+             "text-[#7ec87e] bg-[#7ec87e]/10")
+          }
         >
           {isCity
             ? "CITY"
@@ -117,7 +110,7 @@ function EntityDetails() {
             {sel.ch != null && (
               <div className="flex justify-between">
                 <span className="text-[#4a6a88]">2020-24</span>
-                <span className={`font-semibold ${sel.ch >= 0 ? "text-[#27ae60]" : "text-[#e74c3c]"}`}>
+                <span className={"font-semibold " + (sel.ch >= 0 ? "text-[#27ae60]" : "text-[#e74c3c]")}>
                   {sel.ch >= 0 ? "+" : ""}{sel.ch}%
                 </span>
               </div>
