@@ -5,8 +5,8 @@
 
 # ---- Rust FFI static library ----
 # Path to the Rust FFI crate (built separately via cargo build --release)
-set(GLOBE_FFI_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../../../rust/globe_ffi")
-set(GLOBE_FFI_INCLUDE "${GLOBE_FFI_DIR}/include")
+get_filename_component(GLOBE_FFI_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../rust/globe_ffi" ABSOLUTE)
+get_filename_component(GLOBE_FFI_INCLUDE "${GLOBE_FFI_DIR}/include" ABSOLUTE)
 
 if(WIN32)
     set(GLOBE_FFI_LIB "${GLOBE_FFI_DIR}/target/release/globe_ffi.lib")
@@ -103,6 +103,7 @@ if(PAL_TRAIT_BUILD_TESTS_SUPPORTED)
             PRIVATE
                 AZ::AzTest
                 Gem::GlobePopulation.Static
+                globe_ffi
     )
     ly_add_googletest(
         NAME Gem::GlobePopulation.Tests

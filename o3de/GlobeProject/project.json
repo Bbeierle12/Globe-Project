@@ -3,7 +3,7 @@
     "project_id": "{globe-project-o3de-001}",
     "version": "0.1.0",
     "compatible_engines": [],
-    "engine": "",
+    "engine": "o3de-sdk",
     "external_subdirectories": [
         "Gem/GlobePopulation",
         "Gem/GlobeLayers",
@@ -16,10 +16,22 @@
         "GlobeLayers",
         "GlobeOsintFeeds",
         "GlobeUI",
-        "CesiumForO3DE",
-        "ImGui"
+        "Atom",
+        "AudioSystem",
+        "CameraFramework",
+        "DebugDraw",
+        "EditorPythonBindings",
+        "GameState",
+        "ImGui",
+        "LyShine",
+        "PhysX",
+        "PrimitiveAssets",
+        "PrefabBuilder",
+        "StartingPointInput",
+        "RemoteTools"
     ],
     "icon_path": "preview.png",
     "origin": "Globe_Project - Desktop refactoring from browser UI",
-    "display_name": "Globe Project"
+    "display_name": "Globe Project",
+    "engine_version": "2.5.2"
 }

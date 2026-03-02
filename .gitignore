@@ -32,5 +32,8 @@ e2e/playwright-report/
 target/
 .vercel
 
-# O3DE user-local settings (contains tokens)
+# O3DE
 o3de/GlobeProject/user/
+o3de/GlobeProject/build/
+o3de/GlobeProject/Cache/
+o3de/GlobeProject/*.bak*

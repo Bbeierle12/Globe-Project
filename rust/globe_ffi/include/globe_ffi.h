@@ -3,15 +3,14 @@
 #ifndef GLOBE_FFI_H
 #define GLOBE_FFI_H
 
-#include <stdarg.h>
-#include <stdbool.h>
-#include <stdint.h>
-#include <stdlib.h>
+#include <cstdarg>
+#include <cstdint>
+#include <cstdlib>
+#include <ostream>
+#include <new>
 
-/**
- * C-safe country summary passed across FFI.
- */
-typedef struct GlobeCountry {
+/// C-safe country summary passed across FFI.
+struct GlobeCountry {
     const char *name;
     uint64_t population;
     double lat;
@@ -19,12 +18,10 @@ typedef struct GlobeCountry {
     const char *iso;
     uint32_t subdivision_count;
     uint32_t index;
-} GlobeCountry;
+};
 
-/**
- * C-safe subdivision summary passed across FFI.
- */
-typedef struct GlobeSubdivision {
+/// C-safe subdivision summary passed across FFI.
+struct GlobeSubdivision {
     const char *name;
     uint64_t population;
     double lat;
@@ -37,30 +34,24 @@ typedef struct GlobeSubdivision {
     double median_age;
     uint32_t country_index;
     uint32_t sub_index;
-} GlobeSubdivision;
+};
 
-/**
- * C-safe search result entry.
- */
-typedef struct GlobeSearchResult {
+/// C-safe search result entry.
+struct GlobeSearchResult {
     uint32_t index;
     const char *name;
     uint64_t population;
-} GlobeSearchResult;
+};
 
-/**
- * RGB color for population visualization.
- */
-typedef struct GlobeColorRgb {
+/// RGB color for population visualization.
+struct GlobeColorRgb {
     uint8_t r;
     uint8_t g;
     uint8_t b;
-} GlobeColorRgb;
+};
 
-/**
- * Detail view for a selected country or subdivision.
- */
-typedef struct GlobeDetailView {
+/// Detail view for a selected country or subdivision.
+struct GlobeDetailView {
     const char *name;
     const char *population;
     const char *density;
@@ -69,79 +60,55 @@ typedef struct GlobeDetailView {
     const char *area;
     const char *change;
     int32_t subdivision_count;
-} GlobeDetailView;
+};
 
-/**
- * Initialize the globe data layer from a JSON string.
- * Returns the number of countries loaded, or -1 on error.
- */
+extern "C" {
+
+/// Initialize the globe data layer from a JSON string.
+/// Returns the number of countries loaded, or -1 on error.
 int32_t globe_init(const char *json_ptr);
 
-/**
- * Free all globe data.
- */
-void globe_shutdown(void);
+/// Free all globe data.
+void globe_shutdown();
 
-/**
- * Return the number of loaded countries.
- */
-uint32_t globe_country_count(void);
+/// Return the number of loaded countries.
+uint32_t globe_country_count();
 
-/**
- * Get a country by index. Returns false if out of bounds.
- * The out pointer is filled with a GlobeCountry whose string pointers
- * are valid until the next globe_init or globe_shutdown call.
- */
-bool globe_get_country(uint32_t index, struct GlobeCountry *out);
+/// Get a country by index. Returns false if out of bounds.
+/// The out pointer is filled with a GlobeCountry whose string pointers
+/// are valid until the next globe_init or globe_shutdown call.
+bool globe_get_country(uint32_t index, GlobeCountry *out);
 
-/**
- * Get a subdivision by country index and subdivision index.
- */
-bool globe_get_subdivision(uint32_t country_index,
-                           uint32_t sub_index,
-                           struct GlobeSubdivision *out);
+/// Get a subdivision by country index and subdivision index.
+bool globe_get_subdivision(uint32_t country_index, uint32_t sub_index, GlobeSubdivision *out);
 
-/**
- * Search countries by query string. Returns the number of results written.
- * Results are written to the `out` array (up to `max_results`).
- */
-uint32_t globe_search(const char *query_ptr, struct GlobeSearchResult *out, uint32_t max_results);
+/// Search countries by query string. Returns the number of results written.
+/// Results are written to the `out` array (up to `max_results`).
+uint32_t globe_search(const char *query_ptr, GlobeSearchResult *out, uint32_t max_results);
 
-/**
- * Format a population number. Caller must free the result with globe_free_string.
- */
+/// Format a population number. Caller must free the result with globe_free_string.
 char *globe_format_population(uint64_t population);
 
-/**
- * Format a density value. Caller must free the result with globe_free_string.
- */
+/// Format a density value. Caller must free the result with globe_free_string.
 char *globe_format_density(double density);
 
-/**
- * Format a percent change. Caller must free the result with globe_free_string.
- */
+/// Format a percent change. Caller must free the result with globe_free_string.
 char *globe_format_change(double pct);
 
-/**
- * Free a string returned by globe_format_* functions.
- */
+/// Free a string returned by globe_format_* functions.
 void globe_free_string(char *ptr);
 
-/**
- * Compute marker size using power-law scaling.
- */
+/// Compute marker size using power-law scaling.
 float globe_marker_size(uint64_t population, uint64_t max_population, float base, float range);
 
-/**
- * Get population color as RGB.
- */
-struct GlobeColorRgb globe_population_color(double normalized);
+/// Get population color as RGB.
+GlobeColorRgb globe_population_color(double normalized);
 
-/**
- * Reset (free) all cached FFI strings to reclaim memory.
- * Safe to call periodically (e.g. every tick) — the next `globe_get_*` call
- * will simply push new CStrings back into the cache.
- */
-void globe_strings_reset(void);
+/// Reset (free) all cached FFI strings to reclaim memory.
+/// Safe to call periodically (e.g. every tick) — the next `globe_get_*` call
+/// will simply push new CStrings back into the cache.
+void globe_strings_reset();
 
-#endif  /* GLOBE_FFI_H */
+}  // extern "C"
+
+#endif  // GLOBE_FFI_H

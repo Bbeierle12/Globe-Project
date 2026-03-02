@@ -5,7 +5,7 @@
     "license": "Apache-2.0",
     "origin": "Globe_Project",
     "type": "Code",
-    "summary": "Layer registry service for the Globe Project. Provides layer registration, visibility toggling, and lifetime management. All data Gems register via GlobeLayerRequestBus; UI only talks to this bus.",
+    "summary": "Layer registry for the Globe Project with visibility toggling and notifications.",
     "canonical_tags": ["Gem"],
     "user_tags": ["globe", "layers", "registry"],
     "icon_path": "preview.png",

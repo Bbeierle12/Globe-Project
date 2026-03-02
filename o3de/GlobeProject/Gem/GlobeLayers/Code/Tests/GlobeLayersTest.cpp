@@ -14,6 +14,19 @@
 // Since we test the system component directly, include it
 #include "Clients/GlobeLayersSystemComponent.h"
 
+// ---- Testable subclass exposing protected lifecycle methods ----
+class TestableGlobeLayersSystemComponent : public GlobeLayers::GlobeLayersSystemComponent
+{
+public:
+    using GlobeLayers::GlobeLayersSystemComponent::Activate;
+    using GlobeLayers::GlobeLayersSystemComponent::Deactivate;
+    using GlobeLayers::GlobeLayersSystemComponent::RegisterLayer;
+    using GlobeLayers::GlobeLayersSystemComponent::UnregisterLayer;
+    using GlobeLayers::GlobeLayersSystemComponent::SetVisible;
+    using GlobeLayers::GlobeLayersSystemComponent::IsVisible;
+    using GlobeLayers::GlobeLayersSystemComponent::GetLayerNames;
+};
+
 // ---- Helper: notification listener ----
 class LayerNotificationListener : public GlobeLayers::GlobeLayerNotificationBus::Handler
 {
@@ -37,7 +50,7 @@ public:
 
 TEST(GlobeLayers, RegisterAndQuery)
 {
-    GlobeLayers::GlobeLayersSystemComponent component;
+    TestableGlobeLayersSystemComponent component;
     component.Activate();
 
     EXPECT_TRUE(component.RegisterLayer("Population"));
@@ -52,7 +65,7 @@ TEST(GlobeLayers, RegisterAndQuery)
 
 TEST(GlobeLayers, DefaultVisibility)
 {
-    GlobeLayers::GlobeLayersSystemComponent component;
+    TestableGlobeLayersSystemComponent component;
     component.Activate();
 
     component.RegisterLayer("Population");
@@ -63,7 +76,7 @@ TEST(GlobeLayers, DefaultVisibility)
 
 TEST(GlobeLayers, ToggleVisibility)
 {
-    GlobeLayers::GlobeLayersSystemComponent component;
+    TestableGlobeLayersSystemComponent component;
     component.Activate();
 
     component.RegisterLayer("Earthquakes");
@@ -80,7 +93,7 @@ TEST(GlobeLayers, ToggleVisibility)
 
 TEST(GlobeLayers, UnregisterLayer)
 {
-    GlobeLayers::GlobeLayersSystemComponent component;
+    TestableGlobeLayersSystemComponent component;
     component.Activate();
 
     component.RegisterLayer("Buildings");
@@ -97,7 +110,7 @@ TEST(GlobeLayers, UnregisterLayer)
 
 TEST(GlobeLayers, UnregisterNonexistent)
 {
-    GlobeLayers::GlobeLayersSystemComponent component;
+    TestableGlobeLayersSystemComponent component;
     component.Activate();
 
     // Should not crash
@@ -109,7 +122,7 @@ TEST(GlobeLayers, UnregisterNonexistent)
 
 TEST(GlobeLayers, IsVisibleNonexistent)
 {
-    GlobeLayers::GlobeLayersSystemComponent component;
+    TestableGlobeLayersSystemComponent component;
     component.Activate();
 
     EXPECT_FALSE(component.IsVisible("DoesNotExist"));
