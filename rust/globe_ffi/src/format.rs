@@ -63,11 +63,7 @@ pub fn population_color(normalized: f64) -> (u8, u8, u8) {
         (1.0, 0.5 - s * 0.5, 0.0)
     };
 
-    (
-        (r * 255.0) as u8,
-        (g * 255.0) as u8,
-        (b * 255.0) as u8,
-    )
+    ((r * 255.0) as u8, (g * 255.0) as u8, (b * 255.0) as u8)
 }
 
 #[cfg(test)]

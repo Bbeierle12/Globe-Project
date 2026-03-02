@@ -14,13 +14,21 @@ pub fn country_matches(country: &Country, query: &str) -> bool {
     if country.iso.to_lowercase().contains(&q) {
         return true;
     }
-    if country.aliases.iter().any(|a| a.to_lowercase().contains(&q)) {
+    if country
+        .aliases
+        .iter()
+        .any(|a| a.to_lowercase().contains(&q))
+    {
         return true;
     }
     if country.subdivisions.iter().any(|s| {
         s.name.to_lowercase().contains(&q)
-            || s.capital.as_ref().is_some_and(|c| c.to_lowercase().contains(&q))
-            || s.region.as_ref().is_some_and(|r| r.to_lowercase().contains(&q))
+            || s.capital
+                .as_ref()
+                .is_some_and(|c| c.to_lowercase().contains(&q))
+            || s.region
+                .as_ref()
+                .is_some_and(|r| r.to_lowercase().contains(&q))
     }) {
         return true;
     }

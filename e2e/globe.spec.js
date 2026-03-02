@@ -19,11 +19,18 @@ test.describe("Globe Application E2E", function() {
 
   test("rotation toggle works", async function({ page }) {
     await expect(page.locator("text=Population Globe")).toBeVisible({ timeout: 15000 });
-    var rotateBtn = page.locator("text=Rotating");
-    await rotateBtn.click();
-    await expect(page.locator("text=Paused")).toBeVisible();
-    await page.locator("text=Paused").click();
-    await expect(page.locator("text=Rotating")).toBeVisible();
+    // Open Settings modal
+    var settingsBtn = page.locator("button[title='Settings']");
+    await settingsBtn.click();
+    await expect(page.locator("text=Auto-Rotate Globe")).toBeVisible({ timeout: 5000 });
+    // Toggle checkbox off
+    var checkbox = page.locator("text=Auto-Rotate Globe").locator("..").locator("input[type='checkbox']");
+    await expect(checkbox).toBeChecked();
+    await checkbox.uncheck();
+    await expect(checkbox).not.toBeChecked();
+    // Toggle checkbox back on
+    await checkbox.check();
+    await expect(checkbox).toBeChecked();
   });
 
   test("clicking a country shows selection details", async function({ page }) {

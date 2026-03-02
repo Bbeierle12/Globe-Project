@@ -249,7 +249,12 @@ pub extern "C" fn globe_free_string(ptr: *mut c_char) {
 
 /// Compute marker size using power-law scaling.
 #[unsafe(no_mangle)]
-pub extern "C" fn globe_marker_size(population: u64, max_population: u64, base: f32, range: f32) -> f32 {
+pub extern "C" fn globe_marker_size(
+    population: u64,
+    max_population: u64,
+    base: f32,
+    range: f32,
+) -> f32 {
     format::marker_size(population, max_population, base, range)
 }
 
@@ -282,7 +287,8 @@ mod tests {
     use std::ffi::CString;
 
     fn test_json() -> CString {
-        CString::new(r#"[
+        CString::new(
+            r#"[
             {
                 "name": "Testland",
                 "population": 1000000,
@@ -318,7 +324,9 @@ mod tests {
                 "subdivision_label": "Province",
                 "subdivisions": []
             }
-        ]"#).unwrap()
+        ]"#,
+        )
+        .unwrap()
     }
 
     #[test]
