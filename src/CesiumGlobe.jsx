@@ -157,14 +157,15 @@ function setupAutoRotate(viewer, autoRotateRef) {
   return onTick;
 }
 
-function setupCameraToggles(viewer, layersRef) {
+function setupCameraToggles(viewer, layersRef, layersStateRef) {
   var onCameraChanged = function() {
     var height = viewer.camera.positionCartographic.height;
-    if (layersRef.current.population) {
+    if (layersRef.current.population && layersStateRef.current.population) {
       layersRef.current.population.setSubdivisionsVisible(height < 12000000);
     }
     if (layersRef.current.buildings) {
-      layersRef.current.buildings.show = height < 1800000;
+      var isGoogleActive = layersRef.current.googleTiles && layersRef.current.googleTiles.show;
+      layersRef.current.buildings.show = layersStateRef.current.buildings && !isGoogleActive && (height < 1800000);
     }
     viewer.scene.requestRender();
   };
@@ -195,14 +196,17 @@ function cleanupAll(resources) {
 
 export { markerSize, getEntryHeight, getPickedEntry };
 
-export default function CesiumGlobe(props) {
-  var onHover = props.onHover;
-  var onSelect = props.onSelect;
-  var autoRotate = props.autoRotate;
-  var expanded = props.expanded;
-  var expandedStates = props.expandedStates;
-  var loadedCounties = props.loadedCounties;
-  var selection = props.selection;
+import { useAppStore } from "./store/useAppStore.js";
+
+export default function CesiumGlobe() {
+  const onHover = useAppStore((state) => state.setHov);
+  const onSelect = useAppStore((state) => state.setSel);
+  const autoRotate = useAppStore((state) => state.autoR);
+  const expanded = useAppStore((state) => state.expanded);
+  const expandedStates = useAppStore((state) => state.expandedStates);
+  const loadedCounties = useAppStore((state) => state.loadedCounties);
+  const selection = useAppStore((state) => state.sel);
+  const layersToggleState = useAppStore((state) => state.layers);
 
   var mountRef = useRef(null);
   var viewerRef = useRef(null);
@@ -222,9 +226,44 @@ export default function CesiumGlobe(props) {
     earthquakes: null,
     googleTiles: null,
   });
+  var layersStateRef = useRef(layersToggleState);
 
   var [loading, setLoading] = useState(true);
   var [err, setErr] = useState(null);
+
+  useEffect(() => {
+    layersStateRef.current = layersToggleState;
+    if (!viewerRef.current) return;
+    
+    var cl = layersRef.current;
+    
+    if (cl.earthquakes && cl.earthquakes.dataSource) {
+      cl.earthquakes.dataSource.show = !!layersToggleState.earthquakes;
+    }
+    if (cl.cities && cl.cities.dataSource) {
+      cl.cities.dataSource.show = !!layersToggleState.cities;
+      if (cl.cities.refreshVisibility) cl.cities.refreshVisibility();
+    }
+    if (cl.googleTiles) {
+      cl.googleTiles.show = !!layersToggleState.googleTiles;
+    }
+    if (cl.population && cl.population.countryDataSource) {
+      cl.population.countryDataSource.show = !!layersToggleState.population;
+      // also force manual toggle of subdivisions on zoom refresh
+      if (!layersToggleState.population) cl.population.setSubdivisionsVisible(false);
+      else {
+        var ht = viewerRef.current.camera.positionCartographic.height;
+        cl.population.setSubdivisionsVisible(ht < 12000000);
+      }
+    }
+    if (cl.buildings) {
+      var isGoogleActive = cl.googleTiles && cl.googleTiles.show;
+      var h = viewerRef.current.camera.positionCartographic.height;
+      cl.buildings.show = !!layersToggleState.buildings && !isGoogleActive && (h < 1800000);
+    }
+
+    viewerRef.current.scene.requestRender();
+  }, [layersToggleState]);
 
   useEffect(
     function() {
@@ -271,14 +310,10 @@ export default function CesiumGlobe(props) {
         var buildings = await createBuildingsLayer(viewer);
         if (dead) { cleanupAll(resources); return; }
         layersRef.current.buildings = buildings;
-        if (buildings) buildings.show = false;
 
         var googleTiles = await createGoogleTilesLayer(viewer);
         if (dead) { cleanupAll(resources); return; }
         layersRef.current.googleTiles = googleTiles;
-        // Google tiles include 3D buildings — suppress the OSM buildings layer
-        // to avoid doubling VRAM usage when both would be active.
-        if (googleTiles && buildings) buildings.show = false;
 
         var earthquakeLayer = await createEarthquakeLayer(viewer);
         if (dead) { cleanupAll(resources); return; }
@@ -294,7 +329,7 @@ export default function CesiumGlobe(props) {
         handlerRef.current = handler;
 
         resources.onTick = setupAutoRotate(viewer, autoRotateRef);
-        resources.onCameraChanged = setupCameraToggles(viewer, layersRef);
+        resources.onCameraChanged = setupCameraToggles(viewer, layersRef, layersStateRef);
 
         setLoading(false);
       } catch (error) {

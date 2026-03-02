@@ -1,9 +1,12 @@
 import * as Cesium from "cesium";
+import { useAppStore } from "../store/useAppStore.js";
 
 function getGoogleApiKey() {
-  return (typeof import.meta !== "undefined" && import.meta.env)
+  const storeKey = useAppStore.getState().apiKeys.googleMaps;
+  const envKey = (typeof import.meta !== "undefined" && import.meta.env)
     ? import.meta.env.VITE_GOOGLE_MAPS_API_KEY || ""
     : "";
+  return storeKey || envKey;
 }
 
 /**

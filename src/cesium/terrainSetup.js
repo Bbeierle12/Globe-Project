@@ -1,9 +1,11 @@
 import * as Cesium from "cesium";
+import { useAppStore } from "../store/useAppStore.js";
 
 var WORLD_TERRAIN_ASSET_ID = 1;
 
 function configureIonToken() {
-  var token = import.meta.env.VITE_CESIUM_ION_TOKEN || "";
+  var storeToken = useAppStore.getState().apiKeys.cesiumIon;
+  var token = storeToken || import.meta.env.VITE_CESIUM_ION_TOKEN || "";
   if (token) Cesium.Ion.defaultAccessToken = token;
   return token;
 }

@@ -72,10 +72,11 @@ async function createCityLayer(viewer, options) {
   });
 
   function refreshVisibility() {
+    var isEnabled = dataSource.show !== false;
     var cameraHeight = viewer.camera.positionCartographic.height;
     var minPop = minPopulationForCameraHeight(cameraHeight);
     entities.forEach(function(entity) {
-      var visible = (entity.__cityPop || 0) >= minPop;
+      var visible = isEnabled && ((entity.__cityPop || 0) >= minPop);
       entity.show = visible;
     });
   }
