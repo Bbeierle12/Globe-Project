@@ -1,0 +1,275 @@
+{
+    "ContainerEntity": {
+        "Id": "Entity_[1000000000001]",
+        "Name": "Level",
+        "Components": {
+            "Component_[1000000000001]": {
+                "$type": "EditorInspectorComponent",
+                "Id": 1000000000001
+            },
+            "Component_[1000000000002]": {
+                "$type": "EditorOnlyEntityComponent",
+                "Id": 1000000000002
+            },
+            "Component_[1000000000003]": {
+                "$type": "EditorPendingCompositionComponent",
+                "Id": 1000000000003
+            },
+            "Component_[1000000000004]": {
+                "$type": "EditorEntitySortComponent",
+                "Id": 1000000000004,
+                "Child Entity Order": [
+                    "Entity_[1000000000010]"
+                ]
+            },
+            "Component_[1000000000005]": {
+                "$type": "{27F1E1A1-8D9D-4C3B-BD3A-AFB9762449C0} TransformComponent",
+                "Id": 1000000000005,
+                "Parent Entity": ""
+            },
+            "Component_[1000000000006]": {
+                "$type": "EditorDisabledCompositionComponent",
+                "Id": 1000000000006
+            },
+            "Component_[1000000000007]": {
+                "$type": "EditorEntityIconComponent",
+                "Id": 1000000000007
+            },
+            "Component_[1000000000008]": {
+                "$type": "EditorPrefabComponent",
+                "Id": 1000000000008
+            },
+            "Component_[1000000000009]": {
+                "$type": "EditorLockComponent",
+                "Id": 1000000000009
+            },
+            "Component_[1000000000100]": {
+                "$type": "EditorVisibilityComponent",
+                "Id": 1000000000100
+            }
+        }
+    },
+    "Entities": {
+        "Entity_[1000000000010]": {
+            "Id": "Entity_[1000000000010]",
+            "Name": "Environment",
+            "Components": {
+                "Component_[1000000000011]": {
+                    "$type": "{27F1E1A1-8D9D-4C3B-BD3A-AFB9762449C0} TransformComponent",
+                    "Id": 1000000000011,
+                    "Parent Entity": "Entity_[1000000000001]"
+                },
+                "Component_[1000000000012]": {
+                    "$type": "EditorInspectorComponent",
+                    "Id": 1000000000012
+                },
+                "Component_[1000000000013]": {
+                    "$type": "EditorEntitySortComponent",
+                    "Id": 1000000000013,
+                    "Child Entity Order": [
+                        "Entity_[1000000000020]",
+                        "Entity_[1000000000030]",
+                        "Entity_[1000000000040]"
+                    ]
+                },
+                "Component_[1000000000014]": {
+                    "$type": "EditorLockComponent",
+                    "Id": 1000000000014
+                },
+                "Component_[1000000000015]": {
+                    "$type": "EditorVisibilityComponent",
+                    "Id": 1000000000015
+                },
+                "Component_[1000000000016]": {
+                    "$type": "EditorEntityIconComponent",
+                    "Id": 1000000000016
+                },
+                "Component_[1000000000017]": {
+                    "$type": "EditorOnlyEntityComponent",
+                    "Id": 1000000000017
+                },
+                "Component_[1000000000018]": {
+                    "$type": "EditorDisabledCompositionComponent",
+                    "Id": 1000000000018
+                },
+                "Component_[1000000000019]": {
+                    "$type": "EditorPendingCompositionComponent",
+                    "Id": 1000000000019
+                }
+            }
+        },
+        "Entity_[1000000000020]": {
+            "Id": "Entity_[1000000000020]",
+            "Name": "Sun",
+            "Components": {
+                "Component_[1000000000021]": {
+                    "$type": "{27F1E1A1-8D9D-4C3B-BD3A-AFB9762449C0} TransformComponent",
+                    "Id": 1000000000021,
+                    "Parent Entity": "Entity_[1000000000010]",
+                    "Transform Data": {
+                        "Translate": [0.0, 0.0, 15.0],
+                        "Rotate": [-70.0, 0.0, -20.0]
+                    }
+                },
+                "Component_[1000000000022]": {
+                    "$type": "AZ::Render::EditorDirectionalLightComponent",
+                    "Id": 1000000000022,
+                    "Controller": {
+                        "Configuration": {
+                            "Intensity": 4.0,
+                            "CameraEntityId": "",
+                            "ShadowFilterMethod": 1
+                        }
+                    }
+                },
+                "Component_[1000000000023]": {
+                    "$type": "EditorInspectorComponent",
+                    "Id": 1000000000023
+                },
+                "Component_[1000000000024]": {
+                    "$type": "EditorEntitySortComponent",
+                    "Id": 1000000000024
+                },
+                "Component_[1000000000025]": {
+                    "$type": "EditorLockComponent",
+                    "Id": 1000000000025
+                },
+                "Component_[1000000000026]": {
+                    "$type": "EditorVisibilityComponent",
+                    "Id": 1000000000026
+                },
+                "Component_[1000000000027]": {
+                    "$type": "EditorEntityIconComponent",
+                    "Id": 1000000000027
+                },
+                "Component_[1000000000028]": {
+                    "$type": "EditorOnlyEntityComponent",
+                    "Id": 1000000000028
+                },
+                "Component_[1000000000029]": {
+                    "$type": "EditorDisabledCompositionComponent",
+                    "Id": 1000000000029
+                },
+                "Component_[1000000000200]": {
+                    "$type": "EditorPendingCompositionComponent",
+                    "Id": 1000000000200
+                }
+            }
+        },
+        "Entity_[1000000000030]": {
+            "Id": "Entity_[1000000000030]",
+            "Name": "Global Sky",
+            "Components": {
+                "Component_[1000000000031]": {
+                    "$type": "{27F1E1A1-8D9D-4C3B-BD3A-AFB9762449C0} TransformComponent",
+                    "Id": 1000000000031,
+                    "Parent Entity": "Entity_[1000000000010]"
+                },
+                "Component_[1000000000032]": {
+                    "$type": "AZ::Render::EditorPhysicalSkyComponent",
+                    "Id": 1000000000032,
+                    "Controller": {
+                        "Configuration": {
+                            "Intensity": 4.0
+                        }
+                    }
+                },
+                "Component_[1000000000034]": {
+                    "$type": "EditorInspectorComponent",
+                    "Id": 1000000000034
+                },
+                "Component_[1000000000035]": {
+                    "$type": "EditorEntitySortComponent",
+                    "Id": 1000000000035
+                },
+                "Component_[1000000000036]": {
+                    "$type": "EditorLockComponent",
+                    "Id": 1000000000036
+                },
+                "Component_[1000000000037]": {
+                    "$type": "EditorVisibilityComponent",
+                    "Id": 1000000000037
+                },
+                "Component_[1000000000038]": {
+                    "$type": "EditorEntityIconComponent",
+                    "Id": 1000000000038
+                },
+                "Component_[1000000000039]": {
+                    "$type": "EditorOnlyEntityComponent",
+                    "Id": 1000000000039
+                },
+                "Component_[1000000000300]": {
+                    "$type": "EditorDisabledCompositionComponent",
+                    "Id": 1000000000300
+                },
+                "Component_[1000000000301]": {
+                    "$type": "EditorPendingCompositionComponent",
+                    "Id": 1000000000301
+                }
+            }
+        },
+        "Entity_[1000000000040]": {
+            "Id": "Entity_[1000000000040]",
+            "Name": "Camera",
+            "Components": {
+                "Component_[1000000000041]": {
+                    "$type": "{27F1E1A1-8D9D-4C3B-BD3A-AFB9762449C0} TransformComponent",
+                    "Id": 1000000000041,
+                    "Parent Entity": "Entity_[1000000000010]",
+                    "Transform Data": {
+                        "Translate": [0.0, -5.0, 2.0],
+                        "Rotate": [0.0, 0.0, 0.0]
+                    }
+                },
+                "Component_[1000000000042]": {
+                    "$type": "{CA11DA46-29FF-4083-B5F6-E02C3A8C3A3D} EditorCameraComponent",
+                    "Id": 1000000000042,
+                    "Controller": {
+                        "Configuration": {
+                            "Field of View": 60.0
+                        }
+                    }
+                },
+                "Component_[1000000000043]": {
+                    "$type": "GenericComponentWrapper",
+                    "Id": 1000000000043,
+                    "m_template": {
+                        "$type": "FlyCameraInputComponent"
+                    }
+                },
+                "Component_[1000000000044]": {
+                    "$type": "EditorInspectorComponent",
+                    "Id": 1000000000044
+                },
+                "Component_[1000000000045]": {
+                    "$type": "EditorEntitySortComponent",
+                    "Id": 1000000000045
+                },
+                "Component_[1000000000046]": {
+                    "$type": "EditorLockComponent",
+                    "Id": 1000000000046
+                },
+                "Component_[1000000000047]": {
+                    "$type": "EditorVisibilityComponent",
+                    "Id": 1000000000047
+                },
+                "Component_[1000000000048]": {
+                    "$type": "EditorEntityIconComponent",
+                    "Id": 1000000000048
+                },
+                "Component_[1000000000049]": {
+                    "$type": "EditorOnlyEntityComponent",
+                    "Id": 1000000000049
+                },
+                "Component_[1000000000400]": {
+                    "$type": "EditorDisabledCompositionComponent",
+                    "Id": 1000000000400
+                },
+                "Component_[1000000000401]": {
+                    "$type": "EditorPendingCompositionComponent",
+                    "Id": 1000000000401
+                }
+            }
+        }
+    }
+}

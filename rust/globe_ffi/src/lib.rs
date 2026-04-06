@@ -283,6 +283,7 @@ pub extern "C" fn globe_strings_reset() {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use serial_test::serial;
     use std::ffi::CString;
 
     fn test_json() -> CString {
@@ -329,6 +330,7 @@ mod tests {
     }
 
     #[test]
+    #[serial]
     fn test_init_and_count() {
         let json = test_json();
         let count = globe_init(json.as_ptr());
@@ -350,6 +352,7 @@ mod tests {
     }
 
     #[test]
+    #[serial]
     fn test_get_country() {
         let json = test_json();
         globe_init(json.as_ptr());
@@ -379,6 +382,7 @@ mod tests {
     }
 
     #[test]
+    #[serial]
     fn test_get_subdivision() {
         let json = test_json();
         globe_init(json.as_ptr());
@@ -413,6 +417,7 @@ mod tests {
     }
 
     #[test]
+    #[serial]
     fn test_search() {
         let json = test_json();
         globe_init(json.as_ptr());
@@ -484,6 +489,7 @@ mod tests {
     }
 
     #[test]
+    #[serial]
     fn test_shutdown_idempotent() {
         globe_shutdown();
         globe_shutdown(); // double shutdown should be safe

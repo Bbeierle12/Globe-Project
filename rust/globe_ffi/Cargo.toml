@@ -17,3 +17,4 @@ cbindgen = "0.28"
 
 [dev-dependencies]
 pretty_assertions = "1"
+serial_test = "3"
